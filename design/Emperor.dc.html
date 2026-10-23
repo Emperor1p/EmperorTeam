@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}*{box-sizing:border-box}
+[data-theme]{--bg:#f5f5f3;--panel:#fff;--sunk:#f0efec;--line:#e6e4df;--line2:#d6d3cd;--ink:#1b1a19;--mut:#64615b;--acc:#6a4fd8;--acc-soft:#eeeafc;--acc-text:#5238c4;--ok-bg:#e5f3ea;--ok:#1c6a3e;--warn-bg:#fdf1dc;--warn:#835200;--bad-bg:#fbe8e7;--bad:#a3302a;--info-bg:#e7eefb;--info:#2a539f;--neu-bg:#efeeeb;--neu:#57544f;--scrim:rgba(20,18,16,.42)}
+[data-theme=dark]{--bg:#131312;--panel:#1c1c1a;--sunk:#242422;--line:#2d2d2a;--line2:#3c3c38;--ink:#ecebe8;--mut:#a29f99;--acc:#7258e2;--acc-soft:#2a2541;--acc-text:#bcaefa;--ok-bg:#17321f;--ok:#82d4a3;--warn-bg:#382b12;--warn:#f0c46e;--bad-bg:#3b1d1b;--bad:#f2a199;--info-bg:#1a2944;--info:#9fbef5;--neu-bg:#2a2a27;--neu:#c0bdb6;--scrim:rgba(0,0,0,.6)}
+a{color:var(--acc-text)}a:hover{color:var(--acc)}input,select,textarea{font:inherit;color:inherit}input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+@keyframes tfpulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</helmet>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#6a4fd8"></rect><text x="50" y="64" font-family="Arial" font-size="44" font-weight="700" fill="#fff" text-anchor="middle">E</text></svg></template>
+<div data-theme="{{ theme }}" style="min-height:100vh;background:var(--bg);color:var(--ink);display:flex;font-size:14px;line-height:1.45">
+
+<sc-if value="{{ signedOut }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 16px">
+<div style="width:100%;max-width:430px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:10px;justify-content:center"><div style="width:34px;height:34px;border-radius:10px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">{{ appInitial }}</div><span style="font-weight:700;font-size:20px;letter-spacing:-0.01em">{{ appName }}</span></div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;background:var(--sunk);border-radius:10px;padding:3px;gap:2px">
+<sc-for list="{{ authTabs }}" as="t" hint-placeholder-count="2"><button type="button" onClick="{{ t.pick }}" style="flex:1;height:34px;border:none;border-radius:8px;background:{{ t.bg }};color:{{ t.ink }};font-weight:600;cursor:pointer">{{ t.label }}</button></sc-for>
+</div>
+<sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ true }}">
+<form onSubmit="{{ signIn }}" style="display:flex;flex-direction:column;gap:12px">
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Email<input type="email" value="{{ af.email }}" onChange="{{ afOn.email }}" placeholder="you@gmail.com" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Password<input type="password" value="{{ af.password }}" onChange="{{ afOn.password }}" placeholder="••••••" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<sc-if value="{{ authErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="color:var(--bad);font-size:13px;font-weight:600">{{ authErr }}</span></sc-if>
+<button type="submit" style="height:42px;border:none;border-radius:10px;background:var(--acc);color:#fff;font-weight:600;font-size:15px;cursor:pointer">Sign in</button>
+<button type="button" onClick="{{ googleIn }}" style="height:42px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);color:var(--ink);font-weight:600;cursor:pointer">Continue with Google</button>
+</form>
+</sc-if>
+<sc-if value="{{ isSignUp }}" hint-placeholder-val="{{ false }}">
+<form onSubmit="{{ signUp }}" style="display:flex;flex-direction:column;gap:12px">
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Full name<input value="{{ af.name }}" onChange="{{ afOn.name }}" placeholder="Grace Johnson" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Email (Gmail for meeting invites)<input type="email" value="{{ af.email }}" onChange="{{ afOn.email }}" placeholder="grace@gmail.com" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Password<input type="password" value="{{ af.password }}" onChange="{{ afOn.password }}" placeholder="At least 6 characters" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Sponsor (who brought you in)<select value="{{ af.sponsor }}" onChange="{{ afOn.sponsor }}" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 10px;font-weight:400;color:var(--ink)"><sc-for list="{{ sponsorOptions }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">My current status<select value="{{ af.kind }}" onChange="{{ setKind }}" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 10px;font-weight:400;color:var(--ink)"><sc-for list="{{ statusSignup }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><span style="font-weight:400">Choose the status you already hold. It never goes down.</span></label>
+<sc-if value="{{ showQpvField }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">QPV this month so far (optional)<input type="number" min="0" value="{{ af.qpv }}" onChange="{{ afOn.qpv }}" placeholder="0" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"><span style="font-weight:400">Adds to your sponsor line's QPV.</span></label></sc-if>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Earnings this month before joining (USD, optional)<input type="number" min="0" value="{{ af.earn }}" onChange="{{ afOn.earn }}" placeholder="0" style="height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"><span style="font-weight:400">Adds to your sponsor's team earnings. QPV and earnings reset to 0 on the 1st of every month.</span></label>
+<sc-if value="{{ authErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="color:var(--bad);font-size:13px;font-weight:600">{{ authErr }}</span></sc-if>
+<button type="submit" style="height:42px;border:none;border-radius:10px;background:var(--acc);color:#fff;font-weight:600;font-size:15px;cursor:pointer">Create account</button>
+</form>
+</sc-if>
+</div>
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ scrim }}" hint-placeholder-val="{{ false }}"><div onClick="{{ closeNav }}" style="position:fixed;inset:0;background:var(--scrim);z-index:30"></div></sc-if>
+<aside style="position:{{ sbPos }};left:{{ sbLeft }};top:0;height:100vh;width:{{ sbW }};flex:none;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;transition:left .2s,width .2s">
+<div style="height:60px;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid var(--line)">
+<div style="width:28px;height:28px;border-radius:8px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none">{{ appInitial }}</div>
+<sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}"><span style="font-weight:700;font-size:16px;letter-spacing:-0.01em">{{ appName }}</span></sc-if>
+</div>
+<nav style="flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="11">
+<div onClick="{{ n.go }}" title="{{ n.label }}" style="height:38px;border-radius:9px;display:flex;align-items:center;gap:10px;padding:0 9px;cursor:pointer;background:{{ n.bg }};color:{{ n.ink }};font-weight:{{ n.weight }}" style-hover="background:var(--sunk)">
+<div style="width:22px;height:22px;border-radius:6px;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;opacity:.85">{{ n.glyph }}</div>
+<sc-if value="{{ n.showLabel }}" hint-placeholder-val="{{ true }}"><span style="flex:1;white-space:nowrap;overflow:hidden">{{ n.label }}</span></sc-if>
+<sc-if value="{{ n.count }}" hint-placeholder-val="{{ false }}"><span style="min-width:20px;height:20px;border-radius:10px;background:var(--acc);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px">{{ n.count }}</span></sc-if>
+</div>
+</sc-for>
+</nav>
+<div style="padding:12px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px">
+<div style="width:32px;height:32px;border-radius:50%;background:{{ me.tint }};color:{{ me.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none">{{ me.initials }}</div>
+<sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}"><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ me.name }}</span><span style="font-size:12px;color:var(--mut)">{{ me.rLabel }}</span></div>
+<button onClick="{{ signOut }}" style="height:28px;padding:0 9px;border-radius:7px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-size:12px;font-weight:600;cursor:pointer">Sign out</button></sc-if>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:60px;position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 16px">
+<button onClick="{{ toggleNav }}" aria-label="Toggle navigation" style="width:36px;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;flex:none"><span style="width:14px;height:1.5px;background:var(--ink)"></span><span style="width:14px;height:1.5px;background:var(--ink)"></span><span style="width:14px;height:1.5px;background:var(--ink)"></span></button>
+<span style="font-weight:600;font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pageTitle }}</span>
+<span title="Updates from your team appear instantly" style="display:flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:13px;background:var(--ok-bg);color:var(--ok);font-size:12px;font-weight:700;flex:none"><span style="width:7px;height:7px;border-radius:50%;background:var(--ok);animation:tfpulse 1.6s infinite"></span><sc-if value="{{ notNarrow }}" hint-placeholder-val="{{ true }}">Live</sc-if></span>
+
+<button onClick="{{ toggleTheme }}" aria-label="Toggle dark mode" style="height:36px;padding:0 10px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;font-weight:600;font-size:12.5px;color:var(--ink);flex:none">{{ themeLabel }}</button>
+<button onClick="{{ goNotifs }}" aria-label="Notifications" style="position:relative;width:36px;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:12px;height:12px;border-radius:6px 6px 2px 2px;border:1.5px solid var(--ink)"></span>
+<sc-if value="{{ unread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px">{{ unread }}</span></sc-if>
+</button>
+</header>
+
+<main style="padding:{{ pagePad }};width:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+
+<sc-if value="{{ pg.dashboard }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:6px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Good morning, {{ me.first }}</h1>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--mut);font-size:13px"><span style="font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px;background:{{ me.rBg }};color:{{ me.rInk }}">{{ me.rLabel }}</span><span>{{ me.monthLine }}</span><span>· Sponsor: {{ me.sponsorName }}</span></div></div>
+<span style="color:var(--mut);font-size:13px">{{ dateLine }}</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-weight:600;font-size:15px">{{ qpvCard.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ monthReset }}</span></div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:34px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ qpvCard.value }}</span><span style="color:var(--mut);font-weight:600">QPV</span></div>
+<div style="height:8px;border-radius:4px;background:var(--sunk);overflow:hidden"><div style="height:100%;width:{{ qpvCard.pct }};background:var(--acc);border-radius:4px;transition:width .3s"></div></div>
+<span style="font-size:12.5px;color:var(--mut)">{{ qpvCard.sub }}</span>
+<form onSubmit="{{ addQpv }}" style="display:flex;gap:8px"><input type="number" min="1" value="{{ qIn }}" onChange="{{ setQIn }}" placeholder="Add QPV collected" aria-label="QPV to add" style="flex:1;min-width:0;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px"><button type="submit" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Add QPV</button></form>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+<sc-for list="{{ myCards }}" as="k" hint-placeholder-count="4">
+<button onClick="{{ k.go }}" style="text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:5px;color:var(--ink)" style-hover="border-color:var(--line2)">
+<span style="font-size:12.5px;color:var(--mut);font-weight:500">{{ k.label }}</span><span style="font-size:21px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span><span style="font-size:12px;color:var(--mut)">{{ k.sub }}</span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:{{ todayCard.bg }};border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px">
+<span style="font-weight:600;font-size:15px">Today</span>
+<span style="font-size:13.5px">{{ todayCard.todo }}</span>
+<span style="font-size:13.5px">{{ todayCard.ci }}</span>
+<button onClick="{{ goDay }}" style="align-self:flex-start;height:34px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;font-size:13px;cursor:pointer;margin-top:4px">Open My Day</button>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">Upcoming meetings</span><a onClick="{{ goMeetings }}" style="font-size:13px;font-weight:600;cursor:pointer">All</a></div>
+<sc-for list="{{ nextMeetings }}" as="m" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--line)"><div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600">{{ m.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ m.whenLabel }} · {{ m.hostName }}</span></div><a href="{{ m.link }}" target="_blank" rel="noopener" style="height:30px;padding:0 11px;border-radius:8px;background:var(--acc-soft);color:var(--acc-text);font-weight:600;font-size:12.5px;display:flex;align-items:center;text-decoration:none">Join</a></div>
+</sc-for>
+<sc-if value="{{ noMeetings }}" hint-placeholder-val="{{ false }}"><span style="color:var(--mut);font-size:13px">No meetings scheduled.</span></sc-if>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ hasTeam }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:6px"><span style="font-weight:700;font-size:18px;letter-spacing:-0.01em">{{ teamHeading }}</span><a onClick="{{ goTeam }}" style="font-size:13px;font-weight:600;cursor:pointer">Open team structure</a></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ teamBreak }}" as="b" hint-placeholder-count="6"><span style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:16px;background:{{ b.bg }};color:{{ b.ink }};font-weight:600;font-size:12.5px">{{ b.label }}<span style="font-weight:700;font-size:14px">{{ b.count }}</span></span></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px">
+<sc-for list="{{ teamCards }}" as="k" hint-placeholder-count="8">
+<button onClick="{{ k.go }}" style="text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:5px;color:var(--ink)" style-hover="border-color:var(--line2)">
+<span style="font-size:12.5px;color:var(--mut);font-weight:500">{{ k.label }}</span><span style="font-size:21px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span><span style="font-size:12px;color:var(--mut)">{{ k.sub }}</span>
+</button>
+</sc-for>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<span style="font-weight:600;font-size:15px;margin-bottom:8px">Your direct legs</span>
+<sc-for list="{{ legs }}" as="l" hint-placeholder-count="3">
+<div onClick="{{ l.open }}" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer;flex-wrap:wrap" style-hover="background:var(--sunk)">
+<div style="width:34px;height:34px;border-radius:50%;background:{{ l.tint }};color:{{ l.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none">{{ l.initials }}</div>
+<div style="flex:1 1 160px;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600">{{ l.name }}</span><span style="font-size:12px;color:var(--mut)">{{ l.legLine }}</span></div>
+<span style="font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:{{ l.rBg }};color:{{ l.rInk }}">{{ l.rLabel }}</span>
+<span style="width:110px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums">{{ l.teamEarnLabel }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ pg.day }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">My Day</h1><span style="color:var(--mut)">{{ dateLine }} · Missing check-ins and to-do lists get a reminder at 9:00 PM.</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px;align-items:start">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-weight:600;font-size:15px">To-do list</span><span style="font-size:12.5px;color:var(--mut)">{{ todoProgress }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+<sc-for list="{{ todoStats }}" as="k" hint-placeholder-count="4"><div style="background:var(--sunk);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column"><span style="font-size:11.5px;color:var(--mut);font-weight:600">{{ k.label }}</span><span style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span></div></sc-for>
+</div>
+<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin:0 -2px">
+<sc-for list="{{ todoDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.pick }}" style="flex:none;min-width:58px;height:46px;border-radius:10px;border:1px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.ink }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0 8px"><span style="font-size:11.5px;font-weight:700;white-space:nowrap">{{ d.label }}</span><span style="font-size:11.5px;font-weight:700;color:{{ d.cInk }}">{{ d.count }}</span></button></sc-for>
+</div>
+<sc-if value="{{ isTodoToday }}" hint-placeholder-val="{{ true }}">
+<form onSubmit="{{ addTodo }}" style="display:flex;gap:8px"><input value="{{ todoIn }}" onChange="{{ setTodoIn }}" placeholder="Add something to do today" aria-label="New to-do" style="flex:1;min-width:0;height:40px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px"><button type="submit" style="height:40px;padding:0 14px;border-radius:9px;border:none;background:var(--ink);color:var(--bg);font-weight:600;cursor:pointer">Add</button></form>
+</sc-if>
+<sc-if value="{{ notTodoToday }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;color:var(--mut)">Viewing {{ todoDayLabel }}. Past lists are read-only. Move unfinished items to today.</span></sc-if>
+<sc-for list="{{ todos }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)">
+<button onClick="{{ t.toggle }}" aria-label="Toggle done" style="width:24px;height:24px;border-radius:6px;border:1.5px solid {{ t.ring }};background:{{ t.fill }};color:#fff;font-size:12px;font-weight:700;cursor:{{ t.cursor }};flex:none;display:flex;align-items:center;justify-content:center;padding:0">{{ t.mark }}</button>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="text-decoration:{{ t.deco }};color:{{ t.color }}">{{ t.text }}</span><sc-if value="{{ t.note }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;font-weight:600;color:{{ t.noteInk }}">{{ t.note }}</span></sc-if></div>
+<sc-for list="{{ t.actions }}" as="a" hint-placeholder-count="0"><button onClick="{{ a.run }}" style="height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap">{{ a.label }}</button></sc-for>
+</div>
+</sc-for>
+<sc-if value="{{ noTodos }}" hint-placeholder-val="{{ false }}"><span style="color:var(--mut);font-size:13px">{{ noTodosText }}</span></sc-if>
+<span style="font-size:12px;color:var(--mut)">Your sponsor and upline can see today's list on your profile. Missing lists get a reminder at 9:00 PM.</span>
+</div>
+
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-weight:600;font-size:15px">Daily check-in</span><span style="font-size:12.5px;color:var(--mut)">{{ ciStamp }}</span></div>
+<sc-if value="{{ showCiForm }}" hint-placeholder-val="{{ true }}">
+<form onSubmit="{{ submitCi }}" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<sc-for list="{{ ciNums }}" as="f" hint-placeholder-count="4"><label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">{{ f.label }}<input type="number" min="0" value="{{ f.value }}" onChange="{{ f.on }}" placeholder="0" style="height:38px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label></sc-for>
+</div>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Daily progress<textarea rows="3" value="{{ ci.progress }}" onChange="{{ ciOn.progress }}" placeholder="What did you get done today?" style="border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:10px 12px;font-weight:400;color:var(--ink);resize:vertical"></textarea></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Any issue? (sent to your sponsor and upline)<textarea rows="2" value="{{ ci.issue }}" onChange="{{ ciOn.issue }}" placeholder="Optional" style="border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:10px 12px;font-weight:400;color:var(--ink);resize:vertical"></textarea></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">Book I'm reading this month<input value="{{ ci.book }}" onChange="{{ ciOn.book }}" placeholder="Title and author" style="height:38px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></label>
+<sc-if value="{{ ciErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="color:var(--bad);font-size:13px;font-weight:600">{{ ciErr }}</span></sc-if>
+<button type="submit" style="align-self:flex-start;height:38px;padding:0 16px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">{{ ciBtn }}</button>
+</form>
+</sc-if>
+<sc-if value="{{ ciDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<sc-for list="{{ ciDone.nums }}" as="n" hint-placeholder-count="4"><div style="background:var(--sunk);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column"><span style="font-size:12px;color:var(--mut);font-weight:600">{{ n.label }}</span><span style="font-size:20px;font-weight:700">{{ n.value }}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:var(--mut);font-weight:600">Daily progress</span><span>{{ ciDone.progress }}</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:var(--mut);font-weight:600">Book this month</span><span>{{ ciDone.book }}</span></div>
+<button onClick="{{ editCi }}" style="align-self:flex-start;height:32px;padding:0 13px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer">Edit check-in</button>
+</sc-if>
+</div>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;min-width:640px">
+<thead><tr style="text-align:left;color:var(--mut);font-size:12px"><sc-for list="{{ histHead }}" as="h" hint-placeholder-count="7"><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line);text-align:{{ h.align }}">{{ h.label }}</th></sc-for></tr></thead>
+<tbody><sc-for list="{{ hist }}" as="r" hint-placeholder-count="7"><tr><sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="7"><td style="white-space:nowrap;padding:11px 16px;border-bottom:1px solid var(--line);text-align:{{ c.align }};color:{{ c.ink }};font-weight:{{ c.weight }};font-variant-numeric:tabular-nums">{{ c.v }}</td></sc-for></tr></sc-for></tbody>
+</table>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.chat }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;height:{{ chatH }};min-height:420px">
+<sc-if value="{{ showConvList }}" hint-placeholder-val="{{ true }}">
+<div style="width:{{ convListW }};flex:none;border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0">
+<div style="padding:14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px">
+<span style="font-weight:700;font-size:17px">Chat</span>
+<select value="" onChange="{{ newChat }}" aria-label="New message" style="height:38px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 10px;font-weight:600;font-size:13px"><sc-for list="{{ chatContacts }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+</div>
+<div style="flex:1;overflow-y:auto">
+<sc-for list="{{ convRows }}" as="c" hint-placeholder-count="3">
+<div onClick="{{ c.open }}" style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:{{ c.bg }}" style-hover="background:var(--sunk)">
+<div style="width:38px;height:38px;border-radius:50%;background:{{ c.tint }};color:{{ c.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none">{{ c.initials }}</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;gap:6px"><span style="font-weight:{{ c.weight }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.title }}</span><span style="font-size:11.5px;color:var(--mut);flex:none">{{ c.time }}</span></div><span style="font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.sub }}</span></div>
+<sc-if value="{{ c.unread }}" hint-placeholder-val="{{ false }}"><span style="min-width:20px;height:20px;border-radius:10px;background:var(--acc);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;flex:none">{{ c.unread }}</span></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ noConvs }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 16px;color:var(--mut);font-size:13px">No chats yet. Pick someone above to start one.</div></sc-if>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showThread }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px">
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}"><button onClick="{{ chatBack }}" aria-label="Back" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font-weight:700;flex:none">‹</button></sc-if>
+<div style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:700">{{ chatTitle }}</span><span style="font-size:12px;color:var(--mut)">{{ chatSub }}</span></div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="0">
+<div style="display:flex;flex-direction:column;align-items:{{ m.align }};gap:2px">
+<sc-if value="{{ m.showName }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;font-weight:700;color:var(--mut);padding:0 4px;margin-top:6px">{{ m.name }}</span></sc-if>
+<div style="max-width:min(78%,520px);background:{{ m.bg }};color:{{ m.ink }};border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:2px"><span style="white-space:pre-wrap;word-break:break-word">{{ m.text }}</span><span style="font-size:10.5px;opacity:.7;align-self:flex-end">{{ m.at }}</span></div>
+</div>
+</sc-for>
+<sc-if value="{{ noMsgs }}" hint-placeholder-val="{{ false }}"><span style="margin:auto;color:var(--mut);font-size:13px">No messages yet. Say hello.</span></sc-if>
+</div>
+<form onSubmit="{{ sendChat }}" style="padding:10px;border-top:1px solid var(--line);display:flex;gap:8px"><input value="{{ chatIn }}" onChange="{{ setChatIn }}" placeholder="Write a message" aria-label="Message" style="flex:1;min-width:0;height:42px;border-radius:21px;border:1px solid var(--line2);background:var(--sunk);padding:0 16px"><button type="submit" style="height:42px;padding:0 18px;border-radius:21px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Send</button></form>
+</sc-if>
+<sc-if value="{{ noConvSel }}" hint-placeholder-val="{{ true }}"><div style="margin:auto;color:var(--mut);text-align:center;padding:24px;display:flex;flex-direction:column;gap:4px"><span style="font-weight:600;color:var(--ink)">Choose a chat</span><span style="font-size:13px">Team group chats and private messages with your sponsor, upline and downline.</span></div></sc-if>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.orders }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Orders &amp; Earnings</h1><span style="color:var(--mut)">Personal earnings = your orders. Team earnings = your orders plus everyone in your team.</span></div>
+<button onClick="{{ openOrder }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Log an order</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ rangeChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.pick }}" style="height:32px;padding:0 12px;border-radius:16px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.ink }};font-weight:600;font-size:12.5px;cursor:pointer">{{ c.label }}</button></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+<sc-for list="{{ orderCards }}" as="k" hint-placeholder-count="5"><div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:12.5px;color:var(--mut)">{{ k.label }}</span><span style="font-size:21px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span><span style="font-size:12px;color:var(--mut)">{{ k.sub }}</span></div></sc-for>
+</div>
+<sc-if value="{{ hasTeam }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:2px;border-bottom:1px solid var(--line)">
+<sc-for list="{{ orderTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="height:40px;padding:0 14px;border:none;background:none;border-bottom:2px solid {{ t.bd }};color:{{ t.ink }};font-weight:600;cursor:pointer;margin-bottom:-1px">{{ t.label }}</button></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid var(--line)">
+<div style="display:flex;justify-content:space-between;gap:10px"><div style="min-width:0;display:flex;flex-direction:column"><span style="font-weight:600">{{ o.project }}</span><span style="font-size:12px;color:var(--mut)">{{ o.whoName }} · {{ o.platform }} · {{ o.dateLabel }}</span></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none"><span style="font-weight:700;text-decoration:{{ o.deco }}">{{ o.amountLabel }}</span><span style="font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;background:{{ o.sBg }};color:{{ o.sInk }}">{{ o.status }}</span></div></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ o.actions }}" as="a" hint-placeholder-count="0"><button onClick="{{ a.run }}" style="height:32px;padding:0 12px;border-radius:8px;border:1px solid {{ a.bd }};background:{{ a.bg }};color:{{ a.ink }};font-weight:600;font-size:12.5px;cursor:pointer">{{ a.label }}</button></sc-for></div>
+</div>
+</sc-for>
+<sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">No orders yet. Tap "Log an order" when you get one.</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ notNarrow }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;min-width:780px">
+<thead><tr style="text-align:left;color:var(--mut);font-size:12px">
+<th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Project</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Member</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Sponsor</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Platform</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Date</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line);text-align:right">Amount</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Status</th><th style="padding:12px 16px;border-bottom:1px solid var(--line)"></th>
+</tr></thead>
+<tbody>
+<sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="6">
+<tr>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600">{{ o.project }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line)">{{ o.whoName }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--mut)">{{ o.sponsorName }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line)">{{ o.platform }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--mut)">{{ o.dateLabel }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line);text-align:right;font-weight:600;font-variant-numeric:tabular-nums;text-decoration:{{ o.deco }}">{{ o.amountLabel }}</td>
+<td style="white-space:nowrap;padding:12px 16px;border-bottom:1px solid var(--line)"><span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:{{ o.sBg }};color:{{ o.sInk }}">{{ o.status }}</span></td>
+<td style="white-space:nowrap;padding:8px 16px;border-bottom:1px solid var(--line)"><div style="display:flex;gap:6px;justify-content:flex-end"><sc-for list="{{ o.actions }}" as="a" hint-placeholder-count="0"><button onClick="{{ a.run }}" style="height:30px;padding:0 11px;border-radius:8px;border:1px solid {{ a.bd }};background:{{ a.bg }};color:{{ a.ink }};font-weight:600;font-size:12.5px;cursor:pointer">{{ a.label }}</button></sc-for></div></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+<sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">No orders in this period.</div></sc-if>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ pg.team }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">{{ teamTitle }}</h1><span style="color:var(--mut)">Team counts include everyone below a person on every level, plus themselves.</span></div>
+<sc-if value="{{ noTeam }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:8px;align-items:flex-start"><span style="font-weight:600;font-size:15px">No one in your team yet</span><span style="color:var(--mut)">When someone signs up with you as their sponsor, they appear here and you're notified.</span><span style="font-size:13px;background:var(--sunk);border-radius:8px;padding:8px 12px;font-weight:600">Your invite link: {{ inviteLink }}</span></div>
+</sc-if>
+<sc-if value="{{ hasTeam }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px">
+<sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="1"><button onClick="{{ c.go }}" style="height:28px;padding:0 10px;border-radius:14px;border:1px solid var(--line2);background:{{ c.bg }};color:{{ c.ink }};font-weight:600;font-size:12.5px;cursor:pointer">{{ c.label }}</button></sc-for>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+<div style="width:48px;height:48px;border-radius:50%;background:{{ focus.tint }};color:{{ focus.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:none">{{ focus.initials }}</div>
+<div style="flex:1 1 200px;display:flex;flex-direction:column"><span style="font-weight:700;font-size:17px">{{ focus.teamName }}</span><span style="font-size:13px;color:var(--mut)">{{ focus.rLabel }} · {{ focus.monthLine }} · Sponsor: {{ focus.sponsorName }}</span></div>
+<button onClick="{{ focus.openDetail }}" style="height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:12.5px;cursor:pointer">Profile</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">
+<sc-for list="{{ focus.stats }}" as="k" hint-placeholder-count="6"><div style="background:var(--sunk);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--mut);font-weight:600">{{ k.label }}</span><span style="font-size:19px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span></div></sc-for>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ focus.breakdown }}" as="b" hint-placeholder-count="6"><span style="display:flex;align-items:center;gap:8px;height:30px;padding:0 11px;border-radius:15px;background:{{ b.bg }};color:{{ b.ink }};font-weight:600;font-size:12.5px">{{ b.label }}<span style="font-weight:700">{{ b.count }}</span></span></sc-for>
+</div>
+</div>
+<sc-if value="{{ hasFocusLegs }}" hint-placeholder-val="{{ true }}">
+<span style="font-weight:600;font-size:15px">{{ focusLegsTitle }}</span>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">
+<sc-for list="{{ focusLegs }}" as="l" hint-placeholder-count="3">
+<button onClick="{{ l.open }}" style="text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;color:var(--ink)" style-hover="border-color:var(--acc)">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:50%;background:{{ l.tint }};color:{{ l.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none">{{ l.initials }}</div><div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600">{{ l.name }}</span><span style="font-size:11.5px;font-weight:700;color:{{ l.rInk }}">{{ l.rLabel }}</span></div><span style="color:var(--mut);font-size:16px">›</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<div style="background:var(--sunk);border-radius:8px;padding:7px 8px;display:flex;flex-direction:column"><span style="font-size:11px;color:var(--mut);font-weight:600">Total QPV</span><span style="font-weight:700">{{ l.qLabel }}</span></div>
+<div style="background:var(--sunk);border-radius:8px;padding:7px 8px;display:flex;flex-direction:column"><span style="font-size:11px;color:var(--mut);font-weight:600">With orders</span><span style="font-weight:700">{{ l.wo }}/{{ l.team.length }}</span></div>
+<div style="background:var(--sunk);border-radius:8px;padding:7px 8px;display:flex;flex-direction:column"><span style="font-size:11px;color:var(--mut);font-weight:600">Earnings</span><span style="font-weight:700">{{ l.teamEarnLabel }}</span></div>
+</div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<input value="{{ treeQ }}" onChange="{{ setTreeQ }}" placeholder="Search name" aria-label="Search team" style="flex:1 1 200px;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px">
+<sc-for list="{{ treeChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="height:32px;padding:0 12px;border-radius:16px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.ink }};font-weight:600;font-size:12.5px;cursor:pointer">{{ c.label }} <span style="opacity:.7">{{ c.count }}</span></button></sc-for>
+</div>
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ treeRows }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;gap:8px;align-items:flex-start;padding:10px 12px 10px {{ r.indentN }};border-bottom:1px solid var(--line);background:{{ r.rowBg }}">
+<button onClick="{{ r.toggle }}" aria-label="Expand or collapse" style="width:22px;height:32px;border:none;background:none;color:var(--mut);cursor:pointer;font-size:11px;padding:0;flex:none;visibility:{{ r.toggleVis }}">{{ r.caret }}</button>
+<div style="width:32px;height:32px;border-radius:50%;background:{{ r.tint }};color:{{ r.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none">{{ r.initials }}</div>
+<div onClick="{{ r.open }}" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;cursor:pointer">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="font-weight:700;font-variant-numeric:tabular-nums;flex:none">{{ r.teamEarnLabel }}</span></div>
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;background:{{ r.rBg }};color:{{ r.rInk }}">{{ r.rLabel }}</span><span style="font-size:11.5px;color:var(--mut)">{{ r.totQ }} QPV · team {{ r.teamSize }} · orders {{ r.ordLabel }}</span><span style="width:7px;height:7px;border-radius:50%;background:{{ r.aInk }}"></span></div>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ noTreeRows }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;color:var(--mut)">No one matches.</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ notNarrow }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow-x:auto">
+<div style="min-width:1060px">
+<div style="display:grid;grid-template-columns:minmax(230px,1.5fr) 160px 70px 76px 56px 60px 90px 104px 80px;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:600"><span>Name</span><span>Status</span><span style="text-align:right">Own QPV</span><span style="text-align:right">Total QPV</span><span style="text-align:right">Team</span><span style="text-align:right">Orders</span><span style="text-align:right">Personal</span><span style="text-align:right">Team earnings</span><span>Activity</span></div>
+<sc-for list="{{ treeRows }}" as="r" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:minmax(230px,1.5fr) 160px 70px 76px 56px 60px 90px 104px 80px;gap:8px;padding:9px 16px;border-bottom:1px solid var(--line);align-items:center;background:{{ r.rowBg }}">
+<div style="display:flex;align-items:center;gap:8px;padding-left:{{ r.indent }};min-width:0">
+<button onClick="{{ r.toggle }}" aria-label="Expand or collapse" style="width:20px;height:20px;border:none;background:none;color:var(--mut);cursor:pointer;font-size:11px;padding:0;flex:none;visibility:{{ r.toggleVis }}">{{ r.caret }}</button>
+<div style="width:28px;height:28px;border-radius:50%;background:{{ r.tint }};color:{{ r.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10.5px;flex:none">{{ r.initials }}</div>
+<div style="display:flex;flex-direction:column;min-width:0"><a onClick="{{ r.open }}" style="font-weight:600;cursor:pointer;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</a><span style="font-size:11.5px;color:var(--mut);white-space:nowrap">{{ r.levelLabel }}</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;align-items:flex-start"><span style="font-size:11.5px;font-weight:700;padding:2px 7px;border-radius:5px;background:{{ r.rBg }};color:{{ r.rInk }};white-space:nowrap">{{ r.rLabel }}</span><sc-if value="{{ r.monthNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--mut);white-space:nowrap">{{ r.monthNote }}</span></sc-if></div>
+<span style="text-align:right;font-variant-numeric:tabular-nums;color:var(--mut)">{{ r.qLabel }}</span>
+<span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:700">{{ r.totQ }}</span>
+<a onClick="{{ r.focusTeam }}" style="text-align:right;font-variant-numeric:tabular-nums;cursor:pointer;font-weight:600">{{ r.teamSize }}</a>
+<span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:{{ r.ordInk }}">{{ r.ordLabel }}</span>
+<span style="text-align:right;font-variant-numeric:tabular-nums">{{ r.personalLabel }}</span>
+<span style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{{ r.teamEarnLabel }}</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:{{ r.aInk }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.aInk }}"></span>{{ r.activity }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ noTreeRows }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;color:var(--mut)">No one matches.</div></sc-if>
+</div>
+</div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-weight:600;font-size:15px">Orders in {{ focus.teamName }} · October</span><span style="font-size:12.5px;color:var(--mut)">{{ focusOrderSum }}</span></div>
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ focusOrders }}" as="o" hint-placeholder-count="3">
+<div onClick="{{ o.open }}" style="display:flex;gap:10px;align-items:center;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer">
+<span style="width:30px;height:30px;border-radius:50%;background:{{ o.tint }};color:{{ o.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10.5px;flex:none">{{ o.initials }}</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.project }}</span><span style="font-size:12px;color:var(--mut)">{{ o.whoName }} · {{ o.platform }} · {{ o.dateLabel }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none"><span style="font-weight:700;text-decoration:{{ o.deco }}">{{ o.amountLabel }}</span><span style="font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;background:{{ o.sBg }};color:{{ o.sInk }}">{{ o.status }}</span></div>
+</div>
+</sc-for>
+<sc-if value="{{ noFocusOrders }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;color:var(--mut)">No orders in this team yet this month.</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ notNarrow }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;min-width:720px">
+<thead><tr style="text-align:left;color:var(--mut);font-size:12px"><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Member</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Sponsor</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Project</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Platform</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Date</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line);text-align:right">Amount</th><th style="white-space:nowrap;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line)">Status</th></tr></thead>
+<tbody>
+<sc-for list="{{ focusOrders }}" as="o" hint-placeholder-count="4">
+<tr>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line)"><a onClick="{{ o.open }}" style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink);font-weight:600"><span style="width:26px;height:26px;border-radius:50%;background:{{ o.tint }};color:{{ o.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px">{{ o.initials }}</span>{{ o.whoName }}</a></td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line);color:var(--mut)">{{ o.sponsorName }}</td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line)">{{ o.project }}</td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line)">{{ o.platform }}</td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line);color:var(--mut)">{{ o.dateLabel }}</td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line);text-align:right;font-weight:600;font-variant-numeric:tabular-nums;text-decoration:{{ o.deco }}">{{ o.amountLabel }}</td>
+<td style="white-space:nowrap;padding:10px 16px;border-bottom:1px solid var(--line)"><span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:{{ o.sBg }};color:{{ o.sInk }}">{{ o.status }}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+<sc-if value="{{ noFocusOrders }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;color:var(--mut)">No orders in this team yet this month.</div></sc-if>
+</div>
+</sc-if>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ pg.tasks }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Team Tasks</h1><span style="color:var(--mut)">Leaders can assign tasks to their direct legs or anyone deeper in their team.</span></div>
+<sc-if value="{{ hasTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openTask }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Assign task</button></sc-if>
+</div>
+<div style="display:flex;gap:2px;border-bottom:1px solid var(--line)">
+<sc-for list="{{ taskTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="height:40px;padding:0 14px;border:none;background:none;border-bottom:2px solid {{ t.bd }};color:{{ t.ink }};font-weight:600;cursor:pointer;margin-bottom:-1px">{{ t.label }} <span style="opacity:.7">{{ t.count }}</span></button></sc-for>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ taskRows }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap">
+<sc-if value="{{ t.canTick }}" hint-placeholder-val="{{ true }}"><button onClick="{{ t.toggle }}" aria-label="Toggle done" style="width:22px;height:22px;border-radius:6px;border:1.5px solid {{ t.ring }};background:{{ t.fill }};color:#fff;font-size:12px;font-weight:700;cursor:pointer;flex:none;padding:0">{{ t.mark }}</button></sc-if>
+<div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600;text-decoration:{{ t.deco }}">{{ t.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ t.meta }} · <span style="color:{{ t.dueInk }}">{{ t.dueLabel }}</span></span></div>
+<span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:{{ t.sBg }};color:{{ t.sInk }}">{{ t.status }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ noTaskRows }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">Nothing here.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.meetings }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Meetings &amp; Training</h1><span style="color:var(--mut)">Invites go to each person's Gmail (Google Calendar) and their notifications.</span></div>
+<sc-if value="{{ hasTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openMeeting }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Schedule meeting</button></sc-if>
+</div>
+<sc-if value="{{ googleOff }}" hint-placeholder-val="{{ false }}"><div style="background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:12px 16px;font-weight:600;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">Connect Google to create Meet links and receive invites in Gmail.<button onClick="{{ toggleGoogle }}" style="height:30px;padding:0 12px;border-radius:8px;border:none;background:var(--warn);color:var(--panel);font-weight:700;font-size:12.5px;cursor:pointer">Connect Google</button></div></sc-if>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ meetingRows }}" as="m" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap">
+<div style="width:54px;flex:none;display:flex;flex-direction:column;align-items:center;background:var(--sunk);border-radius:10px;padding:6px 0"><span style="font-size:11px;font-weight:700;color:var(--mut)">{{ m.mon }}</span><span style="font-size:19px;font-weight:700;line-height:1.1">{{ m.day }}</span></div>
+<div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">{{ m.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ m.time }} · Host {{ m.hostName }} · {{ m.audienceLabel }} · {{ m.count }} invited</span></div>
+<a href="{{ m.link }}" target="_blank" rel="noopener" style="height:34px;padding:0 13px;border-radius:9px;background:var(--acc);color:#fff;font-weight:600;font-size:13px;display:flex;align-items:center;text-decoration:none">Join Google Meet</a>
+</div>
+</sc-for>
+<sc-if value="{{ noMeetingRows }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">No upcoming meetings.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.issues }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Issues</h1><span style="color:var(--mut)">An issue is visible to the person, their sponsor and everyone above them up to the top leader.</span></div>
+<button onClick="{{ openIssue }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Raise an issue</button>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ issueRows }}" as="i" hint-placeholder-count="3">
+<div style="display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;align-items:flex-start">
+<div style="width:32px;height:32px;border-radius:50%;background:{{ i.tint }};color:{{ i.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none">{{ i.initials }}</div>
+<div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-weight:600">{{ i.text }}</span><span style="font-size:12.5px;color:var(--mut)">{{ i.whoName }} · sponsor {{ i.sponsorName }} · {{ i.dateLabel }}</span>
+<sc-if value="{{ i.reply }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;background:var(--sunk);border-radius:8px;padding:8px 10px;margin-top:4px">{{ i.replyByName }}: {{ i.reply }}</span></sc-if></div>
+<span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:{{ i.sBg }};color:{{ i.sInk }}">{{ i.status }}</span>
+<sc-if value="{{ i.canChat }}" hint-placeholder-val="{{ false }}"><button onClick="{{ i.chat }}" style="height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:12.5px;cursor:pointer">Chat</button></sc-if>
+<sc-if value="{{ i.canReply }}" hint-placeholder-val="{{ false }}"><button onClick="{{ i.replyGo }}" style="height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:12.5px;cursor:pointer">Reply</button></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ noIssues }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">No issues.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.achievements }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Achievements</h1><span style="color:var(--mut)">Step-ups are added automatically. Leaders can add achievements for their team, and they show for everyone.</span></div>
+<button onClick="{{ openAch }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Add achievement</button>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ achRows }}" as="a" hint-placeholder-count="5">
+<div style="display:flex;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap">
+<div style="width:34px;height:34px;border-radius:50%;background:{{ a.tint }};color:{{ a.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none">{{ a.initials }}</div>
+<div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column"><span style="font-weight:600">{{ a.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ a.whoName }} · {{ a.dateLabel }} · {{ a.byLabel }}</span></div>
+<span style="font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;background:{{ a.kBg }};color:{{ a.kInk }}">{{ a.kind }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.activity }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Activity</h1><span style="color:var(--mut)">Runs automatically every day at 9:00 PM Lagos time. Active = activity in the last 7 days.</span></div>
+<button onClick="{{ runAuto }}" style="height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;cursor:pointer">Run today's check now</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+<sc-for list="{{ actCards }}" as="k" hint-placeholder-count="4"><div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:12.5px;color:var(--mut)">{{ k.label }}</span><span style="font-size:21px;font-weight:700;color:{{ k.ink }}">{{ k.value }}</span><span style="font-size:12px;color:var(--mut)">{{ k.sub }}</span></div></sc-for>
+</div>
+<sc-for list="{{ actGroups }}" as="g" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-weight:600;font-size:15px">{{ g.title }}</span><span style="font-size:12.5px;color:var(--mut)">{{ g.rule }}</span></div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap">
+<div style="width:30px;height:30px;border-radius:50%;background:{{ r.tint }};color:{{ r.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none">{{ r.initials }}</div>
+<div style="flex:1 1 200px;min-width:0;display:flex;flex-direction:column"><a onClick="{{ r.open }}" style="font-weight:600;cursor:pointer;color:var(--ink)">{{ r.name }}</a><span style="font-size:12.5px;color:var(--mut)">Sponsor {{ r.sponsorName }} · last active {{ r.lastLabel }}</span></div>
+<span style="font-size:12.5px;color:{{ g.ink }};font-weight:600">{{ r.reason }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:20px;text-align:center;color:var(--mut);font-size:13px">No one.</div></sc-if>
+</div>
+</div>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{ pg.notifications }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Notifications</h1><span style="color:var(--mut)">{{ notifSub }}</span></div>
+<button onClick="{{ readAll }}" style="height:34px;padding:0 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer">Mark all as read</button>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ notifRows }}" as="n" hint-placeholder-count="5">
+<div onClick="{{ n.open }}" style="display:flex;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);cursor:pointer;background:{{ n.bg }}" style-hover="background:var(--sunk)">
+<span style="width:8px;height:8px;border-radius:50%;background:{{ n.dot }};flex:none"></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:{{ n.weight }}">{{ n.text }}</span><span style="font-size:12px;color:var(--mut)">{{ n.at }} · {{ n.channel }}</span></div>
+<span style="font-size:12.5px;color:var(--acc-text);font-weight:600">Open</span>
+</div>
+</sc-for>
+<sc-if value="{{ noNotifs }}" hint-placeholder-val="{{ false }}"><div style="padding:36px;text-align:center;color:var(--mut)">You're all caught up.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pg.settings }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.02em">Settings</h1><span style="color:var(--mut)">{{ appName }} · Africa/Lagos · USD</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;align-items:start">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-weight:600;font-size:15px">Profile</span>
+<sc-for list="{{ profileRows }}" as="p" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px"><span style="color:var(--mut)">{{ p.k }}</span><span style="font-weight:600;text-align:right">{{ p.v }}</span></div></sc-for>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<span style="font-weight:600;font-size:15px">Google account</span>
+<span style="color:var(--mut);font-size:13px">{{ googleText }}</span>
+<button onClick="{{ toggleGoogle }}" style="align-self:flex-start;height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;cursor:pointer">{{ googleBtn }}</button>
+</div>
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px">
+<span style="font-weight:600;font-size:15px">Status ladder (QPV in a month)</span>
+<sc-for list="{{ ladder }}" as="l" hint-placeholder-count="6"><div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid var(--line)"><span style="font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:{{ l.bg }};color:{{ l.ink }}">{{ l.name }}</span><span style="font-variant-numeric:tabular-nums;color:var(--mut);font-weight:600">{{ l.range }}</span></div></sc-for>
+<span style="font-size:12.5px;color:var(--mut);padding-top:4px">QPV = your own + everyone in your team, and resets to 0 on the 1st (earnings too). Status never goes down. If a Manager's total is under 500 this month, they stay Manager, and the app also shows "This month: Distributor". Sponsors can correct a downline's status.</span>
+</div>
+</div>
+</sc-if>
+
+</main>
+</div>
+
+<sc-if value="{{ dd }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:var(--scrim);z-index:50"></div>
+<div style="position:fixed;top:0;right:0;bottom:0;width:min(460px,100vw);background:var(--panel);z-index:55;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.15);display:flex;flex-direction:column">
+<div style="padding:20px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center">
+<div style="width:52px;height:52px;border-radius:50%;background:{{ dd.tint }};color:{{ dd.ink }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex:none">{{ dd.initials }}</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-weight:700;font-size:18px">{{ dd.name }}</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span style="font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:5px;background:{{ dd.rBg }};color:{{ dd.rInk }}">{{ dd.rLabel }}</span><span style="font-size:12.5px;color:var(--mut)">{{ dd.monthLine }}</span></div></div>
+<button onClick="{{ closeDetail }}" aria-label="Close" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font-weight:700">×</button>
+</div>
+<div style="padding:20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<sc-for list="{{ dd.stats }}" as="k" hint-placeholder-count="6"><div style="background:var(--sunk);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column"><span style="font-size:12px;color:var(--mut);font-weight:600">{{ k.label }}</span><span style="font-size:17px;font-weight:700;font-variant-numeric:tabular-nums">{{ k.value }}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:0">
+<sc-for list="{{ dd.facts }}" as="f" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:13px"><span style="color:var(--mut)">{{ f.k }}</span><span style="font-weight:600;text-align:right">{{ f.v }}</span></div></sc-for>
+</div>
+<sc-if value="{{ dd.isOther }}" hint-placeholder-val="{{ false }}"><button onClick="{{ dd.message }}" style="height:40px;border-radius:10px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Message {{ dd.first }}</button></sc-if>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;gap:8px"><span style="font-weight:600">Today's to-do list</span><span style="font-size:12.5px;color:var(--mut)">{{ dd.todoLine }}</span></div>
+<sc-for list="{{ dd.todos }}" as="t" hint-placeholder-count="0"><div style="display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:13px"><span style="width:16px;color:{{ t.ink }};font-weight:700">{{ t.mark }}</span><span style="text-decoration:{{ t.deco }}">{{ t.text }}</span></div></sc-for>
+<sc-if value="{{ dd.noTodosToday }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--bad)">No to-do list yet today.</span></sc-if>
+</div>
+<sc-if value="{{ dd.canManage }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;background:var(--sunk);border-radius:12px;padding:14px">
+<span style="font-weight:600">Correct status</span>
+<span style="font-size:12.5px;color:var(--mut)">Use this if their status on the website was different. Raising it counts as a step-up and notifies their upline.</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><select value="{{ statusVal }}" onChange="{{ setStatusVal }}" aria-label="Status" style="flex:1;min-width:160px;height:36px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 10px"><sc-for list="{{ rankOptions }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><button onClick="{{ dd.saveStatus }}" style="height:36px;padding:0 14px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">Save status</button></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button onClick="{{ dd.assign }}" style="height:34px;padding:0 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer">Assign task</button>
+<button onClick="{{ dd.addAch }}" style="height:34px;padding:0 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer">Add achievement</button>
+<button onClick="{{ dd.viewTeam }}" style="height:34px;padding:0 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;font-size:13px;cursor:pointer">View their team</button>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font-weight:600">Orders · October</span>
+<sc-for list="{{ dd.orders }}" as="o" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px"><div style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:600;text-decoration:{{ o.deco }}">{{ o.project }}</span><span style="font-size:12px;color:var(--mut)">{{ o.meta }}</span></div><span style="font-weight:700;font-variant-numeric:tabular-nums;text-decoration:{{ o.deco }}">{{ o.amount }}</span></div></sc-for>
+<sc-if value="{{ dd.noOrders }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--mut)">No orders this month.</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font-weight:600">Last 7 days</span>
+<sc-for list="{{ dd.week }}" as="w" hint-placeholder-count="7"><div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:6px 0;border-top:1px solid var(--line)"><span style="width:70px;color:var(--mut)">{{ w.d }}</span><span style="flex:1;color:{{ w.ink }}">{{ w.line }}</span></div></sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<nav style="position:fixed;left:0;right:0;bottom:0;height:68px;background:var(--panel);border-top:1px solid var(--line);display:flex;z-index:25;padding:6px 6px 8px">
+<sc-for list="{{ bottomTabs }}" as="b" hint-placeholder-count="4">
+<button onClick="{{ b.go }}" style="flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:{{ b.ink }};position:relative">
+<span style="width:44px;height:28px;border-radius:14px;background:{{ b.bg }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px"><span style="width:18px;height:18px;border-radius:5px;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px">{{ b.glyph }}</span></span>
+<span style="font-size:11px;font-weight:700">{{ b.label }}</span>
+<sc-if value="{{ b.count }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:0;left:calc(50% + 8px);min-width:17px;height:17px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px">{{ b.count }}</span></sc-if>
+</button>
+</sc-for>
+<button onClick="{{ openMenu }}" style="flex:1;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--mut);position:relative">
+<span style="width:44px;height:28px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px"><span style="width:16px;height:1.5px;background:currentColor"></span><span style="width:16px;height:1.5px;background:currentColor"></span><span style="width:16px;height:1.5px;background:currentColor"></span></span>
+<span style="font-size:11px;font-weight:700">More</span>
+<sc-if value="{{ menuCount }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:0;left:calc(50% + 8px);min-width:17px;height:17px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px">{{ menuCount }}</span></sc-if>
+</button>
+</nav>
+</sc-if>
+
+<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:var(--scrim);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px">
+<form onClick="{{ stop }}" onSubmit="{{ modal.submit }}" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto;background:var(--panel);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:700;font-size:18px">{{ modal.title }}</span><span style="color:var(--mut);font-size:13px">{{ modal.sub }}</span></div>
+<sc-for list="{{ modal.fields }}" as="f" hint-placeholder-count="0">
+<label style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--mut)">{{ f.label }}
+<sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ true }}"><input type="{{ f.type }}" value="{{ f.value }}" onChange="{{ f.on }}" placeholder="{{ f.ph }}" style="height:38px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 12px;font-weight:400;color:var(--ink)"></sc-if>
+<sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><textarea value="{{ f.value }}" onChange="{{ f.on }}" rows="3" placeholder="{{ f.ph }}" style="border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:10px 12px;font-weight:400;color:var(--ink)"></textarea></sc-if>
+<sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}"><select value="{{ f.value }}" onChange="{{ f.on }}" style="height:38px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:0 10px;font-weight:400;color:var(--ink)"><sc-for list="{{ f.options }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
+<sc-if value="{{ f.isCheck }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:8px;align-items:center;color:var(--ink);font-weight:500"><input type="checkbox" checked="{{ f.checked }}" onChange="{{ f.on }}">{{ f.ph }}</span></sc-if>
+</label>
+</sc-for>
+<sc-if value="{{ modal.calc }}" hint-placeholder-val="{{ false }}"><div style="background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:13px">{{ modal.calc }}</div></sc-if>
+<sc-if value="{{ modalErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="color:var(--bad);font-size:13px;font-weight:600">{{ modalErr }}</span></sc-if>
+<div style="display:flex;gap:8px;justify-content:flex-end;padding-top:4px">
+<button type="button" onClick="{{ closeModal }}" style="height:38px;padding:0 15px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-weight:600;cursor:pointer">Cancel</button>
+<button type="submit" style="height:38px;padding:0 15px;border-radius:9px;border:none;background:var(--acc);color:#fff;font-weight:600;cursor:pointer">{{ modal.btn }}</button>
+</div>
+</form>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ alert }}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="position:fixed;top:{{ alertTop }};right:12px;left:auto;z-index:85;width:min(380px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line2);border-left:none;border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.18);padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+<span style="width:9px;height:9px;border-radius:50%;background:var(--acc);margin-top:6px;flex:none"></span>
+<div onClick="{{ openAlert }}" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;cursor:pointer"><span style="font-size:12px;font-weight:700;color:var(--acc-text)">New notification</span><span style="font-weight:600">{{ alert.text }}</span></div>
+<button onClick="{{ closeAlert }}" aria-label="Dismiss" style="border:none;background:none;color:var(--mut);cursor:pointer;font-weight:700;font-size:16px;line-height:1">×</button>
+</div>
+</sc-if>
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position:fixed;bottom:{{ toastBottom }};left:50%;transform:translateX(-50%);z-index:80;background:var(--ink);color:var(--bg);border-radius:10px;padding:11px 16px;font-weight:600;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:calc(100vw - 32px)">{{ toast }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;appName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Emperor&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const TODAY = '2026-10-22', WEEK0 = '2026-10-19', MONTH0 = '2026-10-01';
+const RANKS = ['Member', 'Distributor', 'Manager', 'Senior Manager', 'Executive Manager', 'Director', 'Emerald Director'];
+const TH = [0, 100, 500, 1000, 2000, 4000, Infinity];
+const rankOf = q => TH.reduce((r, t, i) => q >= t ? i : r, 0);
+const RT = [['var(--neu-bg)', 'var(--neu)'], ['var(--info-bg)', 'var(--info)'], ['var(--acc-soft)', 'var(--acc-text)'], ['var(--ok-bg)', 'var(--ok)'], ['var(--warn-bg)', 'var(--warn)'], ['var(--ink)', 'var(--bg)'], ['var(--ok)', 'var(--panel)']];
+const rb = r => ({ rLabel: RANKS[r], rBg: RT[r][0], rInk: RT[r][1] });
+const TONE = { ok: ['var(--ok-bg)', 'var(--ok)'], warn: ['var(--warn-bg)', 'var(--warn)'], bad: ['var(--bad-bg)', 'var(--bad)'], info: ['var(--info-bg)', 'var(--info)'], neu: ['var(--neu-bg)', 'var(--neu)'], acc: ['var(--acc-soft)', 'var(--acc-text)'] };
+const tn = k => ({ bg: TONE[k][0], ink: TONE[k][1] });
+const pad = n => String(n).padStart(2, '0');
+const usd = n => '$' + Math.round(n).toLocaleString('en-US');
+const fd = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const fdw = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+const addDays = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
+const ago = d => Math.round((Date.parse(TODAY) - Date.parse(d)) / 864e5);
+const clock = () => new Date().toLocaleTimeString('en-GB', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' });
+const sum = (a, f) => a.reduce((t, x) => t + f(x), 0);
+const HUE = [290, 30, 150, 230, 350, 80, 190, 260, 120, 10, 210, 60, 320, 170, 100];
+const PLATFORMS = ['Fiverr', 'Upwork', 'Direct client', 'Other'];
+const ROOT = 'adaeze';
+const meetCode = () => { const c = 'abcdefghijkmnpqrstuvwxyz', r = n => Array.from({ length: n }, () => c[Math.floor(Math.random() * c.length)]).join(''); return `https://meet.google.com/${r(3)}-${r(4)}-${r(3)}`; };
+
+function tree(members) {
+  const M = {}, kids = {};
+  members.forEach(m => { M[m.id] = m; });
+  members.forEach(m => { if (m.sponsor) (kids[m.sponsor] = kids[m.sponsor] || []).push(m.id); });
+  const desc = id => { const o = []; const w = x => (kids[x] || []).forEach(k => { o.push(k); w(k); }); w(id); return o; };
+  const ups = id => { const o = []; let c = M[id] && M[id].sponsor; while (c && M[c]) { o.push(c); c = M[c].sponsor; } return o; };
+  return { M, kids, desc, ups };
+}
+const inviteesFor = (T, host, aud, teamOf) => aud === 'direct' ? (T.kids[host] || []) : aud === 'team' ? [teamOf, ...T.desc(teamOf)] : T.desc(host);
+
+function seed() {
+  const rows = [
+    ['adaeze', 'Adaeze Okafor', null, 5, 1200, 0, '2024-03-01'], ['chidi', 'Chidi Nwosu', 'adaeze', 3, 620, 0, '2024-06-12'], ['ifeoma', 'Ifeoma Eze', 'adaeze', 4, 2100, 0, '2024-07-02'], ['femi', 'Femi Ade', 'adaeze', 0, 20, 3, '2026-09-28'],
+    ['kemi', 'Kemi Adeyemi', 'chidi', 2, 540, 0, '2025-01-15'], ['tunde', 'Tunde Bello', 'chidi', 1, 260, 0, '2025-03-03'], ['zara', 'Zara Ibrahim', 'chidi', 1, 60, 1, '2025-05-20'],
+    ['emeka', 'Emeka Obi', 'kemi', 1, 180, 0, '2025-09-10'], ['amaka', 'Amaka Udo', 'kemi', 0, 40, 2, '2026-08-14'], ['yusuf', 'Yusuf Garba', 'tunde', 0, 0, 16, '2026-06-01'],
+    ['segun', 'Segun Alabi', 'ifeoma', 2, 510, 0, '2025-02-11'], ['ngozi', 'Ngozi Bassey', 'ifeoma', 1, 330, 9, '2025-04-04'], ['bola', 'Bola Hassan', 'segun', 0, 70, 0, '2026-07-19'], ['funmi', 'Funmi Lawal', 'segun', 1, 120, 1, '2026-01-23'], ['tobi', 'Tobi Martins', 'ngozi', 0, 0, 24, '2026-05-02']
+  ];
+  const members = rows.map((r, i) => {
+    const [id, name, sponsor, rank, qpv, idle, joined] = r, a = Math.round(qpv * 0.6);
+    return { id, name, first: name.split(' ')[0], initials: name.split(' ').map(x => x[0]).join(''), sponsor, rank, qpvLog: qpv ? [{ date: `2026-10-${pad(2 + i % 7)}`, amt: a }, ...(qpv - a ? [{ date: `2026-10-${pad(12 + i % 8)}`, amt: qpv - a }] : [])] : [], lastActive: addDays(TODAY, -idle), joined, email: `${id}.tf@gmail.com`, pw: 'demo', tint: `oklch(0.9 0.05 ${HUE[i]})`, ink: `oklch(0.4 0.12 ${HUE[i]})` };
+  });
+  const orders = [
+    ['adaeze', 'Brand identity · Lumen Co', 'Upwork', 650, '2026-10-03', 'Completed'], ['chidi', 'Shopify store setup', 'Fiverr', 420, '2026-10-05', 'Completed'], ['chidi', 'Landing page redesign', 'Upwork', 380, '2026-10-20', 'Active'],
+    ['kemi', 'Logo pack ×3', 'Fiverr', 150, '2026-10-07', 'Completed'], ['kemi', 'Pitch deck', 'Fiverr', 220, '2026-10-21', 'Active'], ['emeka', 'Blog articles ×5', 'Upwork', 125, '2026-10-12', 'Completed'],
+    ['tunde', 'WordPress fixes', 'Fiverr', 90, '2026-10-14', 'Cancelled'], ['tunde', 'Product photo edits', 'Fiverr', 160, '2026-10-19', 'Active'], ['ifeoma', 'Mobile app UI', 'Upwork', 900, '2026-10-09', 'Completed'],
+    ['segun', 'Email campaign', 'Upwork', 300, '2026-10-11', 'Completed'], ['segun', 'Ad creatives', 'Fiverr', 140, '2026-10-20', 'Active'], ['funmi', 'Resume rewrite', 'Fiverr', 60, '2026-10-16', 'Completed'],
+    ['bola', 'Data entry', 'Fiverr', 45, '2026-10-21', 'Active'], ['ngozi', 'Social media pack', 'Fiverr', 110, '2026-10-02', 'Completed'], ['zara', 'Voiceover, 2 min', 'Fiverr', 75, '2026-10-08', 'Completed']
+  ].map((r, i) => ({ id: 'O' + (100 + i), who: r[0], project: r[1], platform: r[2], amount: r[3], date: r[4], status: r[5] }));
+  const logs = {}, todayIn = ['kemi', 'tunde', 'emeka', 'segun', 'funmi', 'ifeoma'];
+  const PROG = ['Replied to all leads and updated two gig descriptions.', 'Delivered a revision and sent three proposals.', 'Followed up with past clients for repeat work.', 'Finished a course module and tested a new gig thumbnail.'];
+  members.forEach((m, i) => {
+    const idle = ago(m.lastActive); logs[m.id] = {};
+    for (let k = 0; k <= 6; k++) {
+      if (k < idle || (k === 0 && !todayIn.includes(m.id)) || (k > 0 && (i + k) % 5 === 0)) continue;
+      logs[m.id][addDays(TODAY, -k)] = { fiverr: (i * 7 + k * 3) % 15 + 3, upwork: (i * 5 + k * 2) % 10 + 1, orders: (i + k) % 3 === 0 ? 1 : 0, cancels: (i + k) % 7 === 0 ? 1 : 0, progress: PROG[(i + k) % 4], at: `20:${pad(10 + k * 7)}` };
+    }
+  });
+  const T0 = { kemi: ['Reply to Fiverr buyers', 'Call Amaka about QPV', 'Post 2 portfolio samples'], tunde: ['Appeal Fiverr review', 'Check in with Yusuf'], chidi: ['Prepare Thursday leg check-in', 'Review Tunde\u2019s issue'], emeka: ['Finish blog article 4'], segun: ['Send ad creatives draft', 'Coach Bola on gig SEO'], ifeoma: ['Plan November targets'], funmi: ['Update resume template'] };
+  const todos = {}; Object.entries(T0).forEach(([id, list]) => { todos[id] = list.map((text, j) => ({ id: id + j, text, done: j === 0 && id !== 'chidi', date: TODAY })); });
+  const books = { adaeze: 'The 7 Habits of Highly Effective People', chidi: 'Atomic Habits · James Clear', kemi: 'Deep Work · Cal Newport', tunde: 'Never Split the Difference', ifeoma: 'The Go-Giver', segun: '$100M Offers', emeka: 'Show Your Work! · Austin Kleon', funmi: 'The Psychology of Money' };
+  const tasks = [['Run Monday training for your legs', 'chidi', 'adaeze', '2026-10-26', false], ['Follow up with Yusuf (inactive 2 weeks)', 'tunde', 'chidi', '2026-10-22', false], ['Help Amaka reach 100 QPV', 'kemi', 'chidi', '2026-10-31', false], ['Review Bola\u2019s gig descriptions', 'segun', 'ifeoma', '2026-10-21', true], ['Share November training plan', 'ifeoma', 'adaeze', '2026-10-28', false], ['Update your Upwork profile photo', 'bola', 'segun', '2026-10-24', false]]
+    .map((r, i) => ({ id: 'T' + i, title: r[0], to: r[1], by: r[2], due: r[3], done: r[4] }));
+  const T = tree(members);
+  const meetings = [['Monthly all-team training', 'adaeze', '2026-10-24', '10:00', 'all', null], ['Leg check-in', 'chidi', '2026-10-23', '19:00', 'direct', null], ['Segun team: gig SEO workshop', 'ifeoma', '2026-10-27', '18:30', 'team', 'segun']]
+    .map((r, i) => ({ id: 'MT' + i, title: r[0], host: r[1], date: r[2], time: r[3], aud: r[4], teamOf: r[5], link: ['https://meet.google.com/tfa-mxqz-rka', 'https://meet.google.com/cnw-legs-chk', 'https://meet.google.com/sgn-seo-wks'][i], invitees: inviteesFor(T, r[1], r[4], r[5]) }));
+  const issues = [{ id: 'I0', who: 'tunde', text: 'Fiverr account under review, can\u2019t accept new orders', date: '2026-10-21', status: 'Open', reply: '', by: '' }, { id: 'I1', who: 'bola', text: 'Not getting any messages on my new gig', date: '2026-10-20', status: 'Open', reply: '', by: '' }, { id: 'I2', who: 'amaka', text: 'How is QPV counted for the month?', date: '2026-10-15', status: 'Resolved', reply: 'Everything you collect from the 1st counts. 100 makes you a Distributor.', by: 'kemi' }];
+  const achievements = [{ id: 'A0', who: 'segun', title: 'Stepped up to Manager', kind: 'Step up', date: '2026-10-15', by: 'auto' }, { id: 'A1', who: 'emeka', title: 'Got a new tool: Canva Pro', kind: 'New tool', date: '2026-10-10', by: 'kemi' }, { id: 'A2', who: 'kemi', title: 'Stepped up to Manager', kind: 'Step up', date: '2026-10-06', by: 'auto' }, { id: 'A3', who: 'ifeoma', title: 'Highest team earnings in Q3', kind: 'Recognition', date: '2026-10-01', by: 'adaeze' }];
+  const N = [['adaeze', 'Tunde Bello raised an issue: Fiverr account under review', 'issues', 'Yesterday'], ['adaeze', 'Segun Alabi (Ifeoma\u2019s team) stepped up to Manager', 'achievements', 'Oct 15'], ['adaeze', 'Tobi Martins is now an inactive member (3 weeks)', 'activity', 'Oct 20'],
+    ['chidi', 'Tunde Bello raised an issue: Fiverr account under review', 'issues', 'Yesterday'], ['chidi', 'Meeting invite: Monthly all-team training · 24 Oct 10:00', 'meetings', 'Oct 19', true], ['chidi', 'You missed yesterday\u2019s daily check-in', 'day', 'Yesterday 21:00'],
+    ['tunde', 'New task from Chidi: Follow up with Yusuf', 'tasks', 'Oct 20'], ['tunde', 'Meeting invite: Leg check-in · 23 Oct 19:00', 'meetings', 'Oct 20', true], ['bola', 'Meeting invite: Segun team: gig SEO workshop · 27 Oct 18:30', 'meetings', 'Oct 21', true], ['bola', 'Add today\u2019s to-do list', 'day', '08:00']]
+    .map((r, i) => ({ id: 'N' + i, to: r[0], text: r[1], page: r[2], at: r[3], email: !!r[4], read: i % 3 === 2 }));
+  return { members: [], orders: [], logs: {}, todos: {}, books: {}, tasks: [], meetings: [], issues: [], achievements: [], notifs: [], google: {} };
+}
+const BTN = { p: { bg: 'var(--acc)', ink: '#fff', bd: 'var(--acc)' }, s: { bg: 'var(--panel)', ink: 'var(--ink)', bd: 'var(--line2)' }, d: { bg: 'var(--panel)', ink: 'var(--bad)', bd: 'var(--line2)' } };
+const act = (label, run, k = 's') => ({ label, run, ...BTN[k] });
+const blankCi = () => ({ fiverr: '', upwork: '', orders: '', cancels: '', progress: '', issue: '', book: '' });
+
+class Component extends DCLogic {
+  state = { ...seed(), me: this.props.startAs && this.props.startAs !== 'signed-out' ? this.props.startAs : null, page: 'dashboard', theme: this.props.dark ? 'dark' : 'light', w: typeof window !== 'undefined' ? window.innerWidth : 1280, navOpen: false, collapsed: false, toast: '', modal: null, fm: {}, modalErr: '', authTab: 'in', af: { email: '', password: '', name: '', sponsor: '', kind: '0', qpv: '', earn: '' }, authErr: '', authTab: 'up', orderTab: 'mine', range: 'month', focus: null, treeF: 'All', treeQ: '', closed: {}, detail: null, statusVal: '0', qIn: '', todoIn: '', ci: blankCi(), ciEdit: false, ciErr: '', taskTab: 'mine', chats: [], chatSel: null, chatIn: '', chatRead: {}, todoDay: TODAY };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); clearTimeout(this.tt); clearTimeout(this.at); }
+  componentDidUpdate(_, prev) {
+    const s = this.state; if (!s.me) return;
+    const mine = s.notifs.filter(n => n.to === s.me);
+    if (prev.me === s.me && mine.length > prev.notifs.filter(n => n.to === s.me).length) {
+      const n = mine[0]; clearTimeout(this.at); this.setState({ alert: { text: n.text, page: n.page, id: n.id } }); this.at = setTimeout(() => this.setState({ alert: null }), 6000);
+    }
+  }
+  toastMsg(t) { clearTimeout(this.tt); this.setState({ toast: t }); this.tt = setTimeout(() => this.setState({ toast: '' }), 3000); }
+  note(list, to, text, page, email) { return [{ id: 'N' + Date.now() + Math.random(), to, text, page, at: clock(), email: !!email, read: false }, ...list]; }
+  touch(members, id) { return members.map(m => m.id === id ? { ...m, lastActive: TODAY } : m); }
+  login(id) { this.setState({ me: id, page: 'dashboard', focus: null, detail: null, chatSel: null, chatIn: '', todoDay: TODAY, ci: { ...blankCi(), book: this.state.books[id] || '' }, ciEdit: false, authErr: '', orderTab: 'mine', taskTab: 'mine', members: this.touch(this.state.members, id) }); }
+  promote(s, id, r, by) {
+    const T = tree(s.members), m = T.M[id];
+    let notifs = s.notifs, achievements = s.achievements;
+    const members = s.members.map(x => x.id === id ? { ...x, rank: r } : x);
+    if (r > m.rank) {
+      achievements = [{ id: 'A' + Date.now(), who: id, title: `Stepped up to ${RANKS[r]}`, kind: 'Step up', date: TODAY, by: 'auto' }, ...achievements];
+      notifs = this.note(notifs, id, r === 1 ? 'You are now a Distributor. Welcome aboard!' : `Congratulations, you stepped up to ${RANKS[r]}`, 'achievements');
+      T.ups(id).forEach((u, i) => { const sp = T.M[m.sponsor].first; notifs = this.note(notifs, u, r === 1 ? (i === 0 ? `You have a new distributor: ${m.name}` : `New distributor in ${sp}\u2019s team: ${m.name}`) : (i === 0 ? `Your direct leg ${m.name} stepped up to ${RANKS[r]}` : `${m.name} (${sp}\u2019s team) stepped up to ${RANKS[r]}`), 'team'); });
+    } else if (r < m.rank) notifs = this.note(notifs, id, `Your status was corrected to ${RANKS[r]} by ${T.M[by].name}`, 'dashboard');
+    return { members, notifs, achievements };
+  }
+  recheck(st, ids) {
+    for (const id of ids) {
+      const T = tree(st.members); if (!T.M[id]) continue;
+      const tq = sum([id, ...T.desc(id)], x => sum((T.M[x].qpvLog || []).filter(e => e.date >= MONTH0), e => e.amt));
+      const r = rankOf(tq); if (r > T.M[id].rank) st = { ...st, ...this.promote(st, id, r) };
+    }
+    return st;
+  }
+  openModal(kind, extra = {}) {
+    const s = this.state, T = tree(s.members), d = T.desc(s.me);
+    const base = { order: { project: '', platform: 'Fiverr', amount: '', date: TODAY, status: 'Active' }, task: { to: d[0] || '', title: '', due: addDays(TODAY, 3) }, meeting: { title: '', date: addDays(TODAY, 2), time: '18:00', aud: 'direct', teamOf: (T.kids[s.me] || [])[0] || '', link: '', gen: !!s.google[s.me] }, issue: { text: '' }, reply: { text: '', resolve: true }, ach: { who: d[0] || s.me, kind: 'New tool', title: '' } }[kind];
+    this.setState({ modal: { kind, ...extra }, fm: { ...base, ...(extra.fm || {}) }, modalErr: '' });
+  }
+  submitModal(e) {
+    e && e.preventDefault();
+    const s = this.state, f = s.fm, k = s.modal.kind, T = tree(s.members), me = T.M[s.me], fail = m => this.setState({ modalErr: m });
+    if (k === 'order') {
+      const amt = parseFloat(f.amount);
+      if (f.project.trim().length < 3) return fail('Enter the project name.');
+      if (!(amt > 0)) return fail('Amount must be more than $0.');
+      if (!f.date || f.date > TODAY) return fail('Order date can\u2019t be in the future.');
+      const o = { id: 'O' + Date.now(), who: s.me, project: f.project.trim(), platform: f.platform, amount: Math.round(amt * 100) / 100, date: f.date, status: f.status };
+      let notifs = s.notifs; if (me.sponsor) notifs = this.note(notifs, me.sponsor, `${me.name} logged an order: ${o.project} · ${usd(o.amount)}`, 'orders');
+      this.setState({ modal: null, orders: [o, ...s.orders], notifs, members: this.touch(s.members, s.me), orderTab: 'mine' });
+      return this.toastMsg(`Order logged · ${usd(o.amount)} added to your earnings and your upline\u2019s team earnings`);
+    }
+    if (k === 'task') {
+      if (!T.desc(s.me).includes(f.to)) return fail('Choose someone in your team.');
+      if (f.title.trim().length < 3) return fail('Give the task a title.');
+      this.setState({ modal: null, tasks: [{ id: 'T' + Date.now(), title: f.title.trim(), to: f.to, by: s.me, due: f.due || TODAY, done: false }, ...s.tasks], notifs: this.note(s.notifs, f.to, `New task from ${me.first}: ${f.title.trim()}`, 'tasks'), taskTab: 'given' });
+      return this.toastMsg(`Task assigned to ${T.M[f.to].name}`);
+    }
+    if (k === 'meeting') {
+      if (f.title.trim().length < 3) return fail('Give the meeting a title.');
+      if (!f.date || f.date < TODAY) return fail('Pick today or a future date.');
+      const link = f.gen ? (s.google[s.me] ? meetCode() : '') : f.link.trim();
+      if (f.gen && !link) return fail('Connect Google in Settings to generate a Meet link, or paste one.');
+      if (!/^https:\/\/meet\.google\.com\/\S+/.test(link)) return fail('Paste a Google Meet link (https://meet.google.com/…).');
+      const inv = inviteesFor(T, s.me, f.aud, f.teamOf);
+      if (!inv.length) return fail('No one to invite for this audience.');
+      let notifs = s.notifs; inv.forEach(id => { notifs = this.note(notifs, id, `Meeting invite: ${f.title.trim()} · ${fd(f.date)} ${f.time} · sent to ${T.M[id].email}`, 'meetings', true); });
+      this.setState({ modal: null, notifs, meetings: [...s.meetings, { id: 'MT' + Date.now(), title: f.title.trim(), host: s.me, date: f.date, time: f.time, aud: f.aud, teamOf: f.teamOf, link, invitees: inv }] });
+      return this.toastMsg(`Invites sent to ${inv.length} people · Gmail + in-app`);
+    }
+    if (k === 'issue') {
+      if (f.text.trim().length < 5) return fail('Describe the issue.');
+      let notifs = s.notifs; T.ups(s.me).forEach((u, i) => { notifs = this.note(notifs, u, `${me.name}${i ? ` (${T.M[me.sponsor].first}\u2019s team)` : ''} raised an issue: ${f.text.trim()}`, 'issues'); });
+      this.setState({ modal: null, notifs, issues: [{ id: 'I' + Date.now(), who: s.me, text: f.text.trim(), date: TODAY, status: 'Open', reply: '', by: '' }, ...s.issues] });
+      return this.toastMsg('Issue sent to your sponsor and upline');
+    }
+    if (k === 'reply') {
+      if (f.text.trim().length < 2) return fail('Write a reply.');
+      const is = s.issues.find(x => x.id === s.modal.id);
+      this.setState({ modal: null, issues: s.issues.map(x => x.id === is.id ? { ...x, reply: f.text.trim(), by: s.me, status: f.resolve ? 'Resolved' : 'Open' } : x), notifs: this.note(s.notifs, is.who, `${me.first} replied to your issue: ${f.text.trim()}`, 'issues') });
+      return this.toastMsg('Reply sent');
+    }
+    if (k === 'ach') {
+      if (f.title.trim().length < 3) return fail('Describe the achievement.');
+      if (f.who !== s.me && !T.desc(s.me).includes(f.who)) return fail('You can add achievements for yourself or your team.');
+      const who = T.M[f.who];
+      let notifs = s.notifs; if (f.who !== s.me) notifs = this.note(notifs, f.who, `${me.first} added an achievement for you: ${f.title.trim()}`, 'achievements');
+      T.ups(f.who).filter(u => u !== s.me).forEach(u => { notifs = this.note(notifs, u, `Achievement · ${who.name}: ${f.title.trim()}`, 'achievements'); });
+      this.setState({ modal: null, notifs, achievements: [{ id: 'A' + Date.now(), who: f.who, title: f.title.trim(), kind: f.kind, date: TODAY, by: s.me }, ...s.achievements] });
+      return this.toastMsg('Achievement added · visible to the whole team');
+    }
+  }
+
+  renderVals() {
+    const s = this.state, appName = this.props.appName || 'Emperor';
+    const T = tree(s.members), M = T.M;
+    const monthQ = id => sum((M[id].qpvLog || []).filter(e => e.date >= MONTH0), e => e.amt);
+    const live = s.orders.filter(o => o.status !== 'Cancelled');
+    const pe = (id, from = MONTH0) => sum(live.filter(o => o.who === id && o.date >= from), o => o.amount);
+    const actv = id => { const d = ago(M[id].lastActive); return d >= 14 ? 'Inactive' : d >= 7 ? 'Idle' : 'Active'; };
+    const aInk = a => a === 'Active' ? 'var(--ok)' : a === 'Idle' ? 'var(--warn)' : 'var(--bad)';
+    const I = {};
+    const ordN = id => live.filter(o => o.who === id && o.date >= MONTH0).length;
+    s.members.forEach(m => { const q = monthQ(m.id), team = [m.id, ...T.desc(m.id)], teamQ = sum(team, monthQ); I[m.id] = { ...m, ...rb(m.rank), q, teamQ, mr: rankOf(teamQ), team, personal: pe(m.id), teamEarn: sum(team, pe), ordN: ordN(m.id), activity: actv(m.id), sponsorName: m.sponsor ? M[m.sponsor].name : 'None (top leader)' }; });
+    const monthLine = p => p.mr < p.rank ? `${p.teamQ} QPV · This month: ${RANKS[p.mr]}` : `${p.teamQ} QPV this month`;
+    const breakdown = ids => RANKS.map((r, i) => ({ label: r + (i ? 's' : 's'), count: ids.filter(x => M[x].rank === i).length, bg: RT[i][0], ink: RT[i][1] }));
+    const authTabs = [['in', 'Sign in'], ['up', 'Sign up']].map(([id, label]) => ({ label, bg: s.authTab === id ? 'var(--panel)' : 'transparent', ink: s.authTab === id ? 'var(--ink)' : 'var(--mut)', pick: () => this.setState({ authTab: id, authErr: '' }) }));
+    const afOn = {}; ['email', 'password', 'name', 'sponsor', 'qpv', 'earn'].forEach(k => { afOn[k] = e => { const v = e.target.value; this.setState(st => ({ af: { ...st.af, [k]: v }, authErr: '' })); }; });
+    const base = {
+      theme: s.theme, appName, appInitial: appName[0], toast: s.toast,
+      signedOut: !s.me, signedIn: !!s.me, authTabs, isSignIn: s.authTab === 'in', isSignUp: s.authTab === 'up', af: s.af, afOn, authErr: s.authErr,
+      sponsorOptions: [{ v: '', l: s.members.length ? 'Choose your sponsor…' : 'No sponsor · I am the top leader' }, ...s.members.map(m => ({ v: m.id, l: `${m.name} · ${RANKS[m.rank]}` }))],
+      statusSignup: RANKS.map((r, i) => ({ v: String(i), l: r })), setKind: e => { const v = e.target.value; this.setState(st => ({ af: { ...st.af, kind: v }, authErr: '' })); }, showQpvField: true,
+
+      signIn: e => { e.preventDefault(); const m = s.members.find(x => x.email.toLowerCase() === s.af.email.trim().toLowerCase()); if (!m || s.af.password !== m.pw) return this.setState({ authErr: 'Email or password is incorrect.' }); this.login(m.id); },
+      googleIn: () => this.setState({ authErr: 'Google sign-in opens here once the app is connected to Supabase. Use email for now.' }),
+      signUp: e => {
+        e.preventDefault(); const a = s.af, name = a.name.trim(), q = parseInt(a.qpv, 10) || 0, err = m => this.setState({ authErr: m });
+        if (name.split(/\s+/).length < 2) return err('Enter your first and last name.');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email.trim())) return err('Enter a valid email.');
+        if (s.members.some(m => m.email.toLowerCase() === a.email.trim().toLowerCase())) return err('An account with this email already exists.');
+        if (a.password.length < 6) return err('Password must be at least 6 characters.');
+        if (s.members.length && !a.sponsor) return err('Choose your sponsor. Only the first person (the top leader) has no sponsor.');
+        const startRank = Math.max(+a.kind || 0, rankOf(q)); if (q < 0) return err('QPV can\u2019t be negative.');
+        const earn = parseFloat(a.earn) || 0; if (earn < 0) return err('Earnings can\u2019t be negative.');
+        const id = 'u' + Date.now(), i = s.members.length;
+        const nm = { id, name, first: name.split(' ')[0], initials: name.split(/\s+/).map(x => x[0]).join('').slice(0, 2).toUpperCase(), sponsor: a.sponsor || null, rank: startRank, qpvLog: q ? [{ date: TODAY, amt: q }] : [], lastActive: TODAY, joined: TODAY, email: a.email.trim(), pw: a.password, tint: `oklch(0.9 0.05 ${HUE[i % 15]})`, ink: `oklch(0.4 0.12 ${HUE[i % 15]})` };
+        let st = { ...s, members: [...s.members, nm], orders: earn > 0 ? [{ id: 'O' + Date.now(), who: id, project: 'Earnings this month before joining the app', platform: 'Other', amount: Math.round(earn * 100) / 100, date: TODAY, status: 'Completed' }, ...s.orders] : s.orders };
+        const T2 = tree(st.members);
+        T2.ups(id).forEach((u, j) => { st.notifs = this.note(st.notifs, u, `${name} joined ${j === 0 ? 'your team' : `${T2.M[a.sponsor].first}\u2019s team`} as ${RANKS[startRank]}${q ? ` · +${q} QPV to your team` : ''}${earn > 0 ? ` · +${usd(earn)} team earnings` : ''}`, 'team'); });
+        st = this.recheck(st, [id, ...T2.ups(id)]);
+        this.setState({ members: st.members, notifs: st.notifs, achievements: st.achievements, orders: st.orders, af: { email: '', password: '', name: '', sponsor: '', kind: '0', qpv: '', earn: '' }, me: id, page: 'dashboard', focus: null, detail: null, ci: blankCi(), ciEdit: false, authErr: '' });
+        this.toastMsg(a.sponsor ? `Welcome, ${nm.first}! Your sponsor ${T2.M[a.sponsor].first} has been notified.` : `Welcome, ${nm.first}! You are the top leader.`);
+      }
+    };
+    if (!s.me || !M[s.me]) return { ...base, signedOut: true, signedIn: false };
+
+    const me = I[s.me], isRoot = !me.sponsor, myDesc = T.desc(s.me), hasTeam = myDesc.length > 0;
+    const wide = s.w >= 960, narrow = s.w < 640;
+    const fOn = key => e => { const v = e.target.type === 'checkbox' ? e.target.checked : e.target.value; this.setState(st => ({ fm: { ...st.fm, [key]: v }, modalErr: '' })); };
+    const go = (page, extra = {}) => () => this.setState({ page, navOpen: false, detail: null, ...extra });
+    const chip = (label, on, pick, count) => ({ label, count, pick, bg: on ? 'var(--ink)' : 'var(--panel)', ink: on ? 'var(--bg)' : 'var(--ink)', bd: on ? 'var(--ink)' : 'var(--line2)' });
+    const tab = (label, on, pick, count) => ({ label, count, pick, bd: on ? 'var(--acc)' : 'transparent', ink: on ? 'var(--ink)' : 'var(--mut)' });
+    const openDetail = id => () => this.setState({ detail: id, statusVal: String(M[id].rank) });
+    const unread = s.notifs.filter(n => n.to === s.me && !n.read).length;
+    const myLog = (s.logs[s.me] || {})[TODAY];
+    const myTodos = (s.todos[s.me] || []).filter(t => t.date === TODAY);
+    const visIssues = s.issues.filter(i => i.who === s.me || T.ups(i.who).includes(s.me));
+    const openIssues = visIssues.filter(i => i.status === 'Open');
+    const myTasksOpen = s.tasks.filter(t => t.to === s.me && !t.done).length;
+
+    const dmId = (a, b) => 'dm:' + [a, b].sort().join('|');
+    const convMembers = c => c.startsWith('team:') ? [c.slice(5), ...T.desc(c.slice(5))] : c.slice(3).split('|');
+    const msgsOf = c => s.chats.filter(m => m.conv === c);
+    const readKey = c => s.me + '|' + c;
+    const othersN = c => msgsOf(c).filter(m => m.from !== s.me).length;
+    const unreadOf = c => (s.page === 'chat' && s.chatSel === c) ? 0 : Math.max(0, othersN(c) - (s.chatRead[readKey(c)] || 0));
+    const openConv = c => this.setState(st => ({ page: 'chat', chatSel: c, detail: null, navOpen: false, chatRead: { ...st.chatRead, [st.me + '|' + c]: st.chats.filter(m => m.conv === c && m.from !== st.me).length } }));
+    const convTitle = c => c.startsWith('team:') ? (c.slice(5) === s.me ? 'My team' : `${M[c.slice(5)].first}\u2019s team`) : M[c.slice(3).split('|').find(x => x !== s.me) || s.me].name;
+    const teamConvs = [...(myDesc.length ? ['team:' + s.me] : []), ...T.ups(s.me).map(u => 'team:' + u)];
+    const dmConvs = [...new Set(s.chats.filter(m => m.conv.startsWith('dm:') && convMembers(m.conv).includes(s.me)).map(m => m.conv))];
+    if (s.chatSel && s.chatSel.startsWith('dm:') && convMembers(s.chatSel).includes(s.me) && !dmConvs.includes(s.chatSel)) dmConvs.unshift(s.chatSel);
+    const lastTs = c => { const l = msgsOf(c); return l.length ? l[l.length - 1].ts : 0; };
+    const allConvs = [...teamConvs, ...dmConvs].sort((a, b) => lastTs(b) - lastTs(a));
+    const chatUnread = sum(allConvs, unreadOf);
+    const pages = [['dashboard', 'Dashboard'], ['day', 'My Day'], ['chat', 'Chat'], ['orders', 'Orders & Earnings'], ['team', isRoot ? 'Organisation' : 'My Team'], ['tasks', 'Team Tasks'], ['meetings', 'Meetings'], ['issues', 'Issues'], ['achievements', 'Achievements'], ...(hasTeam ? [['activity', 'Activity']] : []), ['notifications', 'Notifications'], ['settings', 'Settings']];
+    const showLabels = !wide || !s.collapsed;
+    const counts = { chat: chatUnread, notifications: unread, day: (myLog ? 0 : 1) + (myTodos.length ? 0 : 1), tasks: myTasksOpen, issues: hasTeam ? openIssues.filter(i => i.who !== s.me).length : 0 };
+    const nav = pages.map(([id, label]) => { const on = s.page === id; return { label, glyph: label[0], showLabel: showLabels, count: counts[id] || null, bg: on ? 'var(--acc-soft)' : 'transparent', ink: on ? 'var(--acc-text)' : 'var(--ink)', weight: on ? 600 : 500, go: go(id) }; });
+    const pg = {}; pages.forEach(([id]) => { pg[id] = s.page === id; });
+
+    const nextRank = me.mr < 5 && me.rank < 6 ? me.mr + 1 : null;
+    const split = `Your own ${me.q} + team ${me.teamQ - me.q}`;
+    const qpvCard = me.rank >= 1
+      ? { title: 'Total QPV this month', value: me.teamQ, pct: nextRank ? Math.min(100, Math.round(me.teamQ / TH[nextRank] * 100)) + '%' : '100%', sub: `${split} · ${nextRank ? `${TH[nextRank] - me.teamQ} to reach ${RANKS[nextRank]}${me.mr < me.rank ? `, your status stays ${RANKS[me.rank]}` : ''}` : 'Director level this month'}` }
+      : { title: 'Become a distributor', value: me.teamQ, pct: Math.min(100, me.teamQ) + '%', sub: `${split} · ${Math.max(0, 100 - me.teamQ)} more QPV to become a Distributor` };
+
+    const scope = hasTeam ? [s.me, ...myDesc] : [s.me];
+    const ordersIn = (ids, from) => live.filter(o => ids.includes(o.who) && o.date >= from);
+    const oW = ordersIn(scope, WEEK0), oM = ordersIn(scope, MONTH0);
+    const missedToday = myDesc.filter(id => !(s.logs[id] || {})[TODAY] || !(s.todos[id] || []).some(t => t.date === TODAY));
+    const teamCards = [
+      { label: 'Team size', value: String(scope.length), sub: `${scope.filter(x => M[x].rank >= 1).length} distributors+ · ${scope.filter(x => M[x].rank === 0).length} members`, go: go('team', { treeF: 'All' }) },
+      { label: 'Active members', value: `${scope.filter(x => I[x].activity === 'Active').length}`, sub: `${scope.filter(x => I[x].activity === 'Inactive').length} inactive · ${scope.filter(x => I[x].activity === 'Idle').length} idle 1 week`, go: go('activity') },
+      { label: 'Team earnings · Oct', value: usd(me.teamEarn), sub: `You ${usd(me.personal)} + team ${usd(me.teamEarn - me.personal)}`, go: go('orders', { orderTab: 'team', range: 'month' }) },
+      { label: 'Total QPV · Oct', value: String(me.teamQ), sub: `You ${me.q} + team ${me.teamQ - me.q} · resets 1 Nov`, go: go('team') },
+      { label: 'Orders this week', value: `${oW.length} · ${usd(sum(oW, o => o.amount))}`, sub: `${new Set(oW.map(o => o.who)).size} people collected orders`, go: go('orders', { orderTab: 'team', range: 'week' }) },
+      { label: 'Orders this month', value: `${oM.length} · ${usd(sum(oM, o => o.amount))}`, sub: `${new Set(oM.map(o => o.who)).size} people collected orders`, go: go('orders', { orderTab: 'team', range: 'month' }) },
+      { label: 'Missed check-in / to-do', value: String(missedToday.length), sub: 'Today so far', go: go('activity') },
+      { label: 'Open issues', value: String(openIssues.filter(i => i.who !== s.me).length), sub: 'From your team', go: go('issues') }
+    ];
+    const legView = id => { const p = I[id], wo = p.team.filter(x => I[x].ordN > 0).length; return { ...p, legLine: `${p.team.length} in team · ${wo} with orders · ${p.teamQ} QPV`, teamEarnLabel: usd(p.teamEarn), qLabel: p.teamQ, wo, open: () => this.setState({ page: 'team', focus: id, navOpen: false, treeF: 'All', treeQ: '' }) }; };
+
+    const myMeetings = s.meetings.filter(m => m.date >= TODAY && (m.host === s.me || m.invitees.includes(s.me))).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+    const audLabel = m => m.aud === 'direct' ? 'Direct legs' : m.aud === 'team' ? `${M[m.teamOf].first}\u2019s team` : (!M[m.host].sponsor ? 'Entire team' : `${M[m.host].first}\u2019s whole team`);
+    const meetingView = m => ({ ...m, whenLabel: `${fdw(m.date)} · ${m.time}`, hostName: m.host === s.me ? 'you' : M[m.host].name, audienceLabel: audLabel(m), count: m.invitees.length, mon: new Date(m.date + 'T12:00:00Z').toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' }).toUpperCase(), day: String(+m.date.slice(8)) });
+
+    const todoDone = myTodos.filter(t => t.done).length;
+    const allTodos = s.todos[s.me] || [], dayT = d => allTodos.filter(t => t.date === d);
+    const days7 = Array.from({ length: 7 }, (_, k) => addDays(TODAY, -k));
+    const weekT = allTodos.filter(t => t.date >= days7[6]);
+    let streak = 0; for (let k = 0; k < 60; k++) { const l = dayT(addDays(TODAY, -k)); if (l.length && l.every(t => t.done)) streak++; else if (k === 0) continue; else break; }
+    const viewDay = s.todoDay, isTodoToday = viewDay === TODAY, viewList = dayT(viewDay);
+    const setTodos = fn => this.setState(st => ({ todos: { ...st.todos, [st.me]: fn(st.todos[st.me] || []) }, members: this.touch(st.members, st.me) }));
+    const CI = [['fiverr', 'Fiverr messages today'], ['upwork', 'Upwork messages today'], ['orders', 'Orders today'], ['cancels', 'Cancellations today']];
+    const ciOn = {}; ['progress', 'issue', 'book'].forEach(k => { ciOn[k] = e => { const v = e.target.value; this.setState(st => ({ ci: { ...st.ci, [k]: v }, ciErr: '' })); }; });
+    const showCiForm = !myLog || s.ciEdit;
+    const hist = Array.from({ length: 7 }, (_, k) => addDays(TODAY, -k)).map(d => { const l = (s.logs[s.me] || {})[d]; const td = (s.todos[s.me] || []).filter(t => t.date === d); const c = (v, align = 'right', ink = 'var(--ink)', weight = 400) => ({ v, align, ink, weight }); return { cells: [c(fdw(d), 'left', 'var(--ink)', 600), c(l ? 'Checked in' : 'Missed', 'left', l ? 'var(--ok)' : 'var(--bad)', 600), c(l ? l.fiverr : '—'), c(l ? l.upwork : '—'), c(l ? l.orders : '—'), c(l ? l.cancels : '—'), c(td.length ? `${td.filter(t => t.done).length}/${td.length}` : '—')] }; });
+
+    const ordScope = s.orderTab === 'team' && hasTeam ? scope : [s.me];
+    const from = s.range === 'week' ? WEEK0 : MONTH0;
+    const ordList = s.orders.filter(o => ordScope.includes(o.who) && o.date >= from).sort((a, b) => b.date.localeCompare(a.date));
+    const ordLive = ordList.filter(o => o.status !== 'Cancelled');
+    const orderCards = [
+      { label: `Personal earnings · ${s.range === 'week' ? 'week' : 'Oct'}`, value: usd(pe(s.me, from)), sub: `${live.filter(o => o.who === s.me && o.date >= from).length} orders` },
+      { label: `Team earnings · ${s.range === 'week' ? 'week' : 'Oct'}`, value: usd(sum(me.team, x => pe(x, from))), sub: hasTeam ? `${me.team.length} people incl. you` : 'Same as personal until your team grows' },
+      { label: 'Orders in view', value: String(ordLive.length), sub: usd(sum(ordLive, o => o.amount)) },
+      { label: 'People who collected orders', value: String(new Set(ordLive.map(o => o.who)).size), sub: s.orderTab === 'team' ? 'In your team' : 'You' },
+      { label: 'Cancelled', value: String(ordList.length - ordLive.length), sub: 'Not counted in earnings' }
+    ];
+    const orderRows = ordList.map(o => { const t = tn(o.status === 'Completed' ? 'ok' : o.status === 'Active' ? 'info' : 'bad'); return { ...o, whoName: M[o.who].name, sponsorName: M[o.who].sponsor ? M[M[o.who].sponsor].first : '—', dateLabel: fd(o.date), amountLabel: usd(o.amount), deco: o.status === 'Cancelled' ? 'line-through' : 'none', sBg: t.bg, sInk: t.ink, actions: o.who === s.me && o.status === 'Active' ? [act('Complete', () => this.setState(st => ({ orders: st.orders.map(x => x.id === o.id ? { ...x, status: 'Completed' } : x) })), 's'), act('Cancel', () => { this.setState(st => ({ orders: st.orders.map(x => x.id === o.id ? { ...x, status: 'Cancelled' } : x) })); this.toastMsg('Order cancelled · removed from earnings'); }, 'd')] : [] }; });
+
+    const focusId = s.focus && (s.focus === s.me || myDesc.includes(s.focus)) ? s.focus : s.me;
+    const F = I[focusId];
+    const chain = [focusId, ...T.ups(focusId)]; const ci0 = chain.indexOf(s.me);
+    const crumbs = chain.slice(0, ci0 + 1).reverse().map(id => ({ label: id === s.me ? (isRoot ? 'Organisation' : 'My team') : `${M[id].first}\u2019s team`, bg: id === focusId ? 'var(--ink)' : 'var(--panel)', ink: id === focusId ? 'var(--bg)' : 'var(--ink)', go: () => this.setState({ focus: id }) }));
+    const fDesc = T.desc(focusId);
+    const focus = { ...F, teamName: focusId === s.me ? (isRoot ? 'Whole organisation' : 'Your team') : `${F.name}\u2019s team`, monthLine: monthLine(F), openDetail: openDetail(focusId), breakdown: breakdown(F.team),
+      stats: [{ label: 'Team size', value: F.team.length }, { label: 'Direct legs', value: (T.kids[focusId] || []).length }, { label: 'Distributors+', value: F.team.filter(x => M[x].rank >= 1).length }, { label: 'Members', value: F.team.filter(x => M[x].rank === 0).length }, { label: 'Team earnings · Oct', value: usd(F.teamEarn) }, { label: 'Total QPV · Oct', value: F.teamQ }, { label: 'People with orders', value: F.team.filter(x => I[x].ordN > 0).length }] };
+    const depthOf = id => { let d = 0, c = id; while (c !== focusId && M[c].sponsor) { d++; c = M[c].sponsor; } return d; };
+    const rowOf = (id, depth, flat) => { const p = I[id], kidsN = (T.kids[id] || []).length; return { ...p, indent: depth * 22 + 'px', indentN: (4 + Math.min(depth, 5) * 14) + 'px', caret: s.closed[id] ? '▸' : '▾', toggleVis: !flat && kidsN ? 'visible' : 'hidden', toggle: () => this.setState(st => ({ closed: { ...st.closed, [id]: !st.closed[id] } })), levelLabel: id === focusId ? 'Team root' : `Level ${depthOf(id)} · sponsor ${M[p.sponsor].first}`, monthNote: p.mr < p.rank ? `This month: ${RANKS[p.mr]}` : '', qLabel: String(p.q), totQ: String(p.teamQ), ordLabel: p.ordN ? String(p.ordN) : '—', ordInk: p.ordN ? 'var(--ok)' : 'var(--mut)', teamSize: p.team.length, personalLabel: usd(p.personal), teamEarnLabel: usd(p.teamEarn), aInk: aInk(p.activity), open: openDetail(id), focusTeam: () => this.setState({ focus: id }), rowBg: id === s.me ? 'var(--acc-soft)' : 'transparent' }; };
+    const TF = { All: () => true, Members: x => M[x].rank === 0, Distributors: x => M[x].rank === 1, 'Managers+': x => M[x].rank >= 2, Inactive: x => I[x].activity !== 'Active' };
+    let treeRows = [];
+    const flat = s.treeF !== 'All' || !!s.treeQ;
+    if (!flat) { const walk = (id, d) => { treeRows.push(rowOf(id, d, false)); if (!s.closed[id]) (T.kids[id] || []).forEach(k => walk(k, d + 1)); }; walk(focusId, 0); }
+    else treeRows = F.team.filter(TF[s.treeF]).filter(x => !s.treeQ || M[x].name.toLowerCase().includes(s.treeQ.toLowerCase())).map(x => rowOf(x, 0, true));
+
+    const fOrders = s.orders.filter(o => F.team.includes(o.who) && o.date >= MONTH0).sort((a, b) => b.date.localeCompare(a.date));
+    const fLive = fOrders.filter(o => o.status !== 'Cancelled');
+    const focusOrders = fOrders.map(o => { const t = tn(o.status === 'Completed' ? 'ok' : o.status === 'Active' ? 'info' : 'bad'); return { ...o, ...M[o.who], whoName: M[o.who].name, sponsorName: M[o.who].sponsor ? M[M[o.who].sponsor].first : '—', dateLabel: fd(o.date), amountLabel: usd(o.amount), deco: o.status === 'Cancelled' ? 'line-through' : 'none', sBg: t.bg, sInk: t.ink, open: openDetail(o.who) }; });
+    const focusOrderSum = `${new Set(fLive.map(o => o.who)).size} of ${F.team.length} people have orders · ${fLive.length} orders · ${usd(sum(fLive, o => o.amount))}`;
+    const tList = s.taskTab === 'mine' ? s.tasks.filter(t => t.to === s.me) : s.tasks.filter(t => t.by === s.me);
+    const taskRows = tList.slice().sort((a, b) => a.done - b.done || a.due.localeCompare(b.due)).map(t => { const over = !t.done && t.due < TODAY, st = t.done ? 'Done' : over ? 'Overdue' : 'Open', tt = tn(t.done ? 'ok' : over ? 'bad' : 'info'); return { ...t, canTick: t.to === s.me, ring: t.done ? 'var(--acc)' : 'var(--line2)', fill: t.done ? 'var(--acc)' : 'transparent', mark: t.done ? '✓' : '', deco: t.done ? 'line-through' : 'none', meta: s.taskTab === 'mine' ? `From ${M[t.by].name}` : `To ${M[t.to].name}${M[t.to].sponsor === s.me ? ' (direct leg)' : ''}`, dueLabel: t.due === TODAY ? 'Due today' : `Due ${fd(t.due)}`, dueInk: over ? 'var(--bad)' : 'var(--mut)', status: st, sBg: tt.bg, sInk: tt.ink, toggle: () => { this.setState(st2 => ({ tasks: st2.tasks.map(x => x.id === t.id ? { ...x, done: !x.done } : x), notifs: !t.done ? this.note(st2.notifs, t.by, `${me.name} completed: ${t.title}`, 'tasks') : st2.notifs, members: this.touch(st2.members, st2.me) })); } }; });
+
+    const actRow = (id, reason) => ({ ...I[id], lastLabel: ago(M[id].lastActive) === 0 ? 'today' : `${ago(M[id].lastActive)} days ago`, reason, open: openDetail(id) });
+    const idle = myDesc.filter(x => I[x].activity === 'Idle'), inact = myDesc.filter(x => I[x].activity === 'Inactive');
+    const actGroups = [
+      { title: 'Missed today', rule: 'Reminder at 9:00 PM', ink: 'var(--warn)', rows: missedToday.map(id => actRow(id, [!(s.logs[id] || {})[TODAY] && 'No check-in', !(s.todos[id] || []).some(t => t.date === TODAY) && 'No to-do list'].filter(Boolean).join(' · '))) },
+      { title: 'Not active for a week', rule: '7–13 days · reminder sent', ink: 'var(--warn)', rows: idle.map(id => actRow(id, `${ago(M[id].lastActive)} days`)) },
+      { title: 'Inactive members', rule: '2+ weeks · told they are now inactive', ink: 'var(--bad)', rows: inact.map(id => actRow(id, `${Math.floor(ago(M[id].lastActive) / 7)} weeks`)) }
+    ].map(g => ({ ...g, empty: g.rows.length === 0 }));
+
+    let modal = null;
+    if (s.modal) {
+      const f = s.fm, k = s.modal.kind;
+      const inp = (key, label, type = 'text', ph = '') => ({ label, type, ph, value: f[key] ?? '', on: fOn(key), isInput: true });
+      const area = (key, label, ph = '') => ({ label, ph, value: f[key] ?? '', on: fOn(key), isArea: true });
+      const sel = (key, label, options) => ({ label, value: f[key], on: fOn(key), isSelect: true, options });
+      const chk = (key, label, ph) => ({ label, ph, checked: !!f[key], on: fOn(key), isCheck: true });
+      const teamOpts = myDesc.map(id => ({ v: id, l: `${M[id].name} · ${RANKS[M[id].rank]}${M[id].sponsor === s.me ? ' · direct leg' : ''}` }));
+      const submit = e => this.submitModal(e);
+      if (k === 'order') modal = { title: 'Log an order', sub: 'Adds to your personal earnings and to the team earnings of everyone above you.', btn: 'Save order', fields: [inp('project', 'Project', 'text', 'e.g. Logo design for Ade Foods'), sel('platform', 'Platform', PLATFORMS.map(v => ({ v, l: v }))), inp('amount', 'Amount (USD)', 'number', '400'), inp('date', 'Order date', 'date'), sel('status', 'Status', ['Active', 'Completed'].map(v => ({ v, l: v })))] };
+      if (k === 'task') modal = { title: 'Assign a task', sub: 'They get an in-app notification and email.', btn: 'Assign', fields: [sel('to', 'Assign to', teamOpts), inp('title', 'Task', 'text', 'e.g. Send 20 proposals this week'), inp('due', 'Due date', 'date')] };
+      if (k === 'meeting') { const inv = inviteesFor(T, s.me, f.aud, f.teamOf); modal = { title: 'Schedule a meeting', sub: 'Everyone invited gets a Google Calendar invite in Gmail and an in-app notification.', btn: 'Send invites', fields: [inp('title', 'Title', 'text', 'e.g. Weekly training'), inp('date', 'Date', 'date'), inp('time', 'Time (Lagos)', 'time'), sel('aud', 'Who to invite', [{ v: 'direct', l: 'My direct legs' }, { v: 'team', l: 'A particular leg\u2019s team' }, { v: 'all', l: isRoot ? 'Entire team' : 'My entire team' }]), ...(f.aud === 'team' ? [sel('teamOf', 'Whose team', myDesc.filter(id => (T.kids[id] || []).length || M[id].sponsor === s.me).map(id => ({ v: id, l: `${M[id].name}\u2019s team (${I[id].team.length})` })))] : []), chk('gen', 'Meet link', 'Create a Google Meet link automatically'), ...(f.gen ? [] : [inp('link', 'Google Meet link', 'url', 'https://meet.google.com/abc-defg-hij')])], calc: `${inv.length} people will be invited` }; }
+      if (k === 'issue') modal = { title: 'Raise an issue', sub: `Sent to ${me.sponsor ? M[me.sponsor].name : 'the team'} and everyone above them.`, btn: 'Send', fields: [area('text', 'What\u2019s the issue?', 'e.g. My Upwork proposal credits ran out')] };
+      if (k === 'reply') { const is = s.issues.find(x => x.id === s.modal.id); modal = { title: `Reply to ${M[is.who].first}`, sub: is.text, btn: 'Send reply', fields: [area('text', 'Reply'), chk('resolve', 'Status', 'Mark as resolved')] }; }
+      if (k === 'ach') modal = { title: 'Add achievement', sub: 'Step-ups are added automatically. Use this for new tools, wins and recognition.', btn: 'Add', fields: [sel('who', 'For', [{ v: s.me, l: `${me.name} (me)` }, ...teamOpts]), sel('kind', 'Type', ['New tool', 'Recognition', 'Milestone', 'Other'].map(v => ({ v, l: v }))), inp('title', 'Achievement', 'text', 'e.g. Got a new tool: MacBook Pro')] };
+      modal.submit = submit; modal.calc = modal.calc || null;
+    }
+
+    let dd = null;
+    if (s.detail && M[s.detail]) {
+      const p = I[s.detail], id = s.detail, canManage = myDesc.includes(id), l = (s.logs[id] || {})[TODAY];
+      dd = { ...p, monthLine: monthLine(p), canManage,
+        message: () => openConv(dmId(s.me, id)), isOther: id !== s.me,
+        todos: (s.todos[id] || []).filter(t => t.date === TODAY).map(t => ({ text: t.text, mark: t.done ? '✓' : '○', ink: t.done ? 'var(--ok)' : 'var(--mut)', deco: t.done ? 'line-through' : 'none' })),
+        noTodosToday: !(s.todos[id] || []).some(t => t.date === TODAY),
+        todoLine: (() => { const l = (s.todos[id] || []).filter(t => t.date === TODAY); return l.length ? `${l.filter(t => t.done).length} of ${l.length} done` : 'No list yet'; })(),
+        orders: s.orders.filter(o => o.who === id && o.date >= MONTH0).sort((a, b) => b.date.localeCompare(a.date)).map(o => ({ project: o.project, meta: `${o.platform} · ${fd(o.date)} · ${o.status}`, amount: usd(o.amount), deco: o.status === 'Cancelled' ? 'line-through' : 'none' })),
+        noOrders: !s.orders.some(o => o.who === id && o.date >= MONTH0),
+        stats: [{ label: 'Own QPV · Oct', value: p.q }, { label: 'Total QPV (with team)', value: p.teamQ }, { label: 'Team size', value: p.team.length }, { label: 'Personal · Oct', value: usd(p.personal) }, { label: 'Team earnings · Oct', value: usd(p.teamEarn) }, { label: 'Orders · Oct', value: p.ordN }, { label: 'Direct legs', value: (T.kids[id] || []).length }],
+        facts: [{ k: 'Sponsor', v: p.sponsorName }, { k: 'Joined', v: fd(p.joined) + ' ' + p.joined.slice(0, 4) }, { k: 'Activity', v: `${p.activity} · last active ${ago(p.lastActive) ? ago(p.lastActive) + ' days ago' : 'today'}` }, { k: 'Today', v: l ? `${l.fiverr} Fiverr · ${l.upwork} Upwork msgs · ${l.orders} orders · ${l.cancels} cancelled` : 'No check-in yet' }, { k: 'Book this month', v: s.books[id] || '—' }, { k: 'Email', v: p.email }],
+        week: Array.from({ length: 7 }, (_, k) => addDays(TODAY, -k)).map(d => { const x = (s.logs[id] || {})[d]; return { d: fdw(d).replace(/ \w+$/, ''), line: x ? `${x.fiverr + x.upwork} messages · ${x.orders} orders · ${x.cancels} cancelled` : 'Missed check-in', ink: x ? 'var(--ink)' : 'var(--bad)' }; }),
+        saveStatus: () => { const r = +this.state.statusVal; if (r === M[id].rank) return this.toastMsg('No change.'); const st = { ...this.state, ...this.promote(this.state, id, r, s.me) }; this.setState({ members: st.members, notifs: st.notifs, achievements: st.achievements }); this.toastMsg(`${p.first}\u2019s status set to ${RANKS[r]}`); },
+        assign: () => { this.setState({ detail: null }); this.openModal('task', { fm: { to: id } }); }, addAch: () => { this.setState({ detail: null }); this.openModal('ach', { fm: { who: id } }); },
+        viewTeam: () => this.setState({ detail: null, page: 'team', focus: id, treeF: 'All', treeQ: '' }) };
+    }
+
+    return {
+      ...base,
+      me: { ...me, monthLine: monthLine(me) }, meId: s.me,
+      sbPos: wide ? 'sticky' : 'fixed', sbLeft: wide || s.navOpen ? '0' : '-260px', sbW: wide && s.collapsed ? '68px' : '236px', showLabels, scrim: !wide && s.navOpen,
+      toggleNav: () => wide ? this.setState({ collapsed: !s.collapsed }) : this.setState({ navOpen: !s.navOpen }), closeNav: () => this.setState({ navOpen: false }),
+      pagePad: narrow ? '16px 12px 96px' : '28px 32px 60px', nav, pg, hasTeam, noTeam: !hasTeam, isNarrow: narrow, notNarrow: !narrow, toastBottom: narrow ? '82px' : '20px', convListW: narrow ? '100%' : '320px', chatH: narrow ? 'calc(100vh - 180px)' : 'calc(100vh - 150px)',
+      bottomTabs: [['dashboard', 'Home'], ['day', 'My Day'], ['chat', 'Chat'], ['team', 'Team']].map(([id, label]) => { const on = s.page === id; return { label, glyph: label[0], on, ink: on ? 'var(--acc-text)' : 'var(--mut)', bg: on ? 'var(--acc-soft)' : 'transparent', count: counts[id] || null, go: go(id) }; }),
+      openMenu: () => this.setState({ navOpen: true }), menuCount: (unread + (counts.tasks || 0) + (counts.issues || 0)) || null,
+      convRows: allConvs.map(c => { const l = msgsOf(c), last = l[l.length - 1], isTeam = c.startsWith('team:'), other = isTeam ? M[c.slice(5)] : M[convMembers(c).find(x => x !== s.me) || s.me], on = s.chatSel === c, u = unreadOf(c); return { id: c, title: convTitle(c), initials: isTeam ? '#' : other.initials, tint: isTeam ? 'var(--acc-soft)' : other.tint, ink: isTeam ? 'var(--acc-text)' : other.ink, sub: last ? `${last.from === s.me ? 'You' : M[last.from].first}: ${last.text}` : isTeam ? `${convMembers(c).length} members · group chat` : 'No messages yet', time: last ? last.at : '', unread: u || null, bg: on ? 'var(--acc-soft)' : 'transparent', weight: u ? 700 : 600, open: () => openConv(c) }; }),
+      chatContacts: [{ v: '', l: 'New message to…' }, ...T.ups(s.me).map(id => ({ v: id, l: `${M[id].name} · ${id === me.sponsor ? 'your sponsor' : 'upline'}` })), ...myDesc.map(id => ({ v: id, l: `${M[id].name} · ${M[id].sponsor === s.me ? 'direct leg' : 'in your team'}` }))],
+      newChat: e => { const v = e.target.value; if (v) openConv(dmId(s.me, v)); },
+      chatOpen: !!s.chatSel && convMembers(s.chatSel).includes(s.me), showConvList: !narrow || !s.chatSel, showThread: !!s.chatSel || !narrow, noConvSel: !s.chatSel, noConvs: allConvs.length === 0,
+      chatTitle: s.chatSel ? convTitle(s.chatSel) : '', chatSub: s.chatSel ? (s.chatSel.startsWith('team:') ? `${convMembers(s.chatSel).length} members · everyone in this team can read` : 'Private conversation') : '',
+      chatBack: () => this.setState({ chatSel: null }),
+      chatMsgs: s.chatSel ? msgsOf(s.chatSel).map((m, i, arr) => { const mine = m.from === s.me; return { text: m.text, at: m.at, align: mine ? 'flex-end' : 'flex-start', bg: mine ? 'var(--acc)' : 'var(--sunk)', ink: mine ? '#fff' : 'var(--ink)', name: mine ? '' : M[m.from].name, showName: !mine && (i === 0 || arr[i - 1].from !== m.from) }; }) : [],
+      noMsgs: !!s.chatSel && msgsOf(s.chatSel).length === 0, chatIn: s.chatIn, setChatIn: e => this.setState({ chatIn: e.target.value }),
+      sendChat: e => { e.preventDefault(); const t = s.chatIn.trim(); if (!t || !s.chatSel) return; this.setState(st => ({ chatIn: '', chats: [...st.chats, { id: 'c' + Date.now(), conv: st.chatSel, from: st.me, text: t, at: clock(), ts: Date.now() }], members: this.touch(st.members, st.me) })); },
+      pageTitle: (pages.find(p => p[0] === s.page) || [, ''])[1], unread: unread || null, goNotifs: go('notifications'),
+      themeLabel: s.theme === 'dark' ? 'Light' : 'Dark', toggleTheme: () => this.setState({ theme: s.theme === 'dark' ? 'light' : 'dark' }),
+      viewAs: s.members.map(m => ({ v: m.id, l: narrow ? m.first : `${m.name} · ${RANKS[m.rank]}` })), viewAsW: narrow ? '96px' : '230px', switchMe: e => this.login(e.target.value),
+      alert: s.alert, alertTop: narrow ? '68px' : '72px', closeAlert: () => this.setState({ alert: null }), openAlert: () => { const a = s.alert; this.setState(st => ({ alert: null, page: pages.some(p => p[0] === a.page) ? a.page : 'notifications', notifs: st.notifs.map(x => x.id === a.id ? { ...x, read: true } : x) })); },
+      signOut: () => this.setState({ me: null, authTab: 'in', detail: null, modal: null }),
+      dateLine: `Thursday, 22 October 2026 · Lagos ${clock()}`,
+      qpvCard, qIn: s.qIn, setQIn: e => this.setState({ qIn: e.target.value }),
+      addQpv: e => { e.preventDefault(); const v = parseInt(s.qIn, 10); if (!(v > 0)) return this.toastMsg('Enter a positive QPV number.'); let st = { ...s, members: this.touch(s.members.map(m => m.id === s.me ? { ...m, qpvLog: [...m.qpvLog, { date: TODAY, amt: v }] } : m), s.me) }; const before = st.achievements.length; st = this.recheck(st, [s.me, ...T.ups(s.me)]); const nr = st.members.find(m => m.id === s.me).rank; this.setState({ qIn: '', members: st.members, notifs: st.notifs, achievements: st.achievements }); this.toastMsg(nr > me.rank ? `You stepped up to ${RANKS[nr]}! Your upline has been notified.` : `+${v} QPV · added to you and ${T.ups(s.me).length} upline${T.ups(s.me).length === 1 ? '' : 's'}${st.achievements.length > before ? ' · an upline stepped up' : ''}`); },
+      monthReset: 'October · resets to 0 on 1 Nov', focusOrders, noFocusOrders: focusOrders.length === 0, focusOrderSum, focusLegs: (T.kids[focusId] || []).map(legView), hasFocusLegs: (T.kids[focusId] || []).length > 0, focusLegsTitle: focusId === s.me ? 'Direct legs' : `${F.first}\u2019s direct legs`,
+      myCards: [{ label: 'Personal earnings · Oct', value: usd(me.personal), sub: `${live.filter(o => o.who === s.me && o.date >= MONTH0).length} orders`, go: go('orders', { orderTab: 'mine' }) }, { label: 'Team earnings · Oct', value: usd(me.teamEarn), sub: hasTeam ? `Team adds ${usd(me.teamEarn - me.personal)}` : 'Same as personal', go: go('orders', { orderTab: hasTeam ? 'team' : 'mine' }) }, { label: 'My team', value: String(me.team.length), sub: `${(T.kids[s.me] || []).length} direct legs`, go: go('team') }, { label: 'My tasks', value: String(myTasksOpen), sub: 'Open', go: go('tasks', { taskTab: 'mine' }) }],
+      todayCard: { todo: myTodos.length ? `To-do: ${todoDone} of ${myTodos.length} done` : 'To-do list: not started', ci: myLog ? `Check-in submitted at ${myLog.at}` : 'Daily check-in: not submitted', bg: myLog && myTodos.length ? 'var(--panel)' : 'var(--acc-soft)' },
+      goDay: go('day'), goMeetings: go('meetings'), goTeam: go('team', { focus: null }),
+      nextMeetings: myMeetings.slice(0, 2).map(meetingView), noMeetings: myMeetings.length === 0,
+      teamHeading: isRoot ? 'Whole organisation' : 'Your team', teamBreak: breakdown(scope), teamCards, legs: (T.kids[s.me] || []).map(legView),
+      todos: viewList.map(t => ({ ...t, ring: t.done ? 'var(--acc)' : 'var(--line2)', fill: t.done ? 'var(--acc)' : 'transparent', mark: t.done ? '✓' : '', deco: t.done ? 'line-through' : 'none', color: t.done || t.moved ? 'var(--mut)' : 'var(--ink)', cursor: isTodoToday ? 'pointer' : 'default', note: t.moved ? 'Moved to today' : t.done && t.doneAt ? `Done ${t.doneAt}` : !isTodoToday && !t.done ? 'Not done' : '', noteInk: !isTodoToday && !t.done && !t.moved ? 'var(--bad)' : 'var(--mut)',
+        toggle: () => isTodoToday && setTodos(l => l.map(x => x.id === t.id ? { ...x, done: !x.done, doneAt: !x.done ? clock() : '' } : x)),
+        actions: isTodoToday ? [act('Remove', () => setTodos(l => l.filter(x => x.id !== t.id)))] : (!t.done && !t.moved ? [act('Move to today', () => { setTodos(l => [...l.map(x => x.id === t.id ? { ...x, moved: true } : x), { id: 'td' + Date.now(), text: t.text, done: false, date: TODAY }]); this.toastMsg('Moved to today'); })] : []) })),
+      noTodos: viewList.length === 0, noTodosText: isTodoToday ? 'No to-dos yet today. Add your first one above.' : 'No to-do list on this day.', isTodoToday, notTodoToday: !isTodoToday, todoDayLabel: fdw(viewDay),
+      todoProgress: isTodoToday ? `${todoDone} of ${myTodos.length} done today` : `${viewList.filter(t => t.done).length} of ${viewList.length} done`,
+      todoStats: [{ label: 'Today', value: `${todoDone}/${myTodos.length}` }, { label: 'Last 7 days done', value: weekT.length ? Math.round(weekT.filter(t => t.done).length / weekT.length * 100) + '%' : '—' }, { label: 'Days with a list', value: `${days7.filter(d => dayT(d).length).length}/7` }, { label: 'All-done streak', value: `${streak} day${streak === 1 ? '' : 's'}` }],
+      todoDays: days7.map(d => { const l = dayT(d), on = d === viewDay; return { label: d === TODAY ? 'Today' : fdw(d).split(' ')[0] + ' ' + (+d.slice(8)), count: l.length ? `${l.filter(t => t.done).length}/${l.length}` : '—', bg: on ? 'var(--ink)' : 'var(--panel)', ink: on ? 'var(--bg)' : 'var(--ink)', bd: on ? 'var(--ink)' : 'var(--line2)', cInk: on ? 'var(--bg)' : l.length && l.every(t => t.done) ? 'var(--ok)' : 'var(--mut)', pick: () => this.setState({ todoDay: d }) }; }), todoIn: s.todoIn, setTodoIn: e => this.setState({ todoIn: e.target.value }),
+      addTodo: e => { e.preventDefault(); const t = s.todoIn.trim(); if (!t) return; setTodos(l => [...l, { id: 'td' + Date.now(), text: t, done: false, date: TODAY }]); this.setState({ todoIn: '' }); },
+      ci: s.ci, ciOn, ciErr: s.ciErr, showCiForm, ciBtn: myLog ? 'Save changes' : 'Submit check-in', ciStamp: myLog ? `Submitted ${myLog.at}${myLog.edited ? ` · edited ${myLog.edited}` : ''}` : 'Not submitted yet',
+      ciNums: CI.map(([k, label]) => ({ label, value: s.ci[k], on: e => { const v = e.target.value; this.setState(st => ({ ci: { ...st.ci, [k]: v }, ciErr: '' })); } })),
+      ciDone: myLog && !s.ciEdit ? { nums: CI.map(([k, label]) => ({ label, value: myLog[k] })), progress: myLog.progress, book: s.books[s.me] || '—' } : null,
+      editCi: () => this.setState({ ciEdit: true, ci: { fiverr: String(myLog.fiverr), upwork: String(myLog.upwork), orders: String(myLog.orders), cancels: String(myLog.cancels), progress: myLog.progress, issue: '', book: s.books[s.me] || '' } }),
+      submitCi: e => {
+        e.preventDefault(); const c = s.ci, nums = {};
+        for (const [k, label] of CI) { const v = c[k] === '' ? 0 : Number(c[k]); if (!Number.isInteger(v) || v < 0) return this.setState({ ciErr: `${label} must be a whole number, 0 or more.` }); nums[k] = v; }
+        if (c.progress.trim().length < 3) return this.setState({ ciErr: 'Write a line about your daily progress.' });
+        let notifs = s.notifs, issues = s.issues;
+        if (c.issue.trim().length >= 5) { issues = [{ id: 'I' + Date.now(), who: s.me, text: c.issue.trim(), date: TODAY, status: 'Open', reply: '', by: '' }, ...issues]; T.ups(s.me).forEach((u, i) => { notifs = this.note(notifs, u, `${me.name}${i ? ` (${M[me.sponsor].first}\u2019s team)` : ''} raised an issue: ${c.issue.trim()}`, 'issues'); }); }
+        const rec = { ...nums, progress: c.progress.trim(), at: myLog ? myLog.at : clock(), edited: myLog ? clock() : '' };
+        this.setState({ logs: { ...s.logs, [s.me]: { ...(s.logs[s.me] || {}), [TODAY]: rec } }, books: c.book.trim() ? { ...s.books, [s.me]: c.book.trim() } : s.books, issues, notifs, ciEdit: false, ci: { ...c, issue: '' }, members: this.touch(s.members, s.me) });
+        this.toastMsg(c.issue.trim().length >= 5 ? 'Check-in saved · issue sent to your upline' : myLog ? 'Check-in updated' : 'Check-in submitted');
+      },
+      histHead: [['Day', 'left'], ['Check-in', 'left'], ['Fiverr msgs', 'right'], ['Upwork msgs', 'right'], ['Orders', 'right'], ['Cancellations', 'right'], ['To-dos', 'right']].map(([label, align]) => ({ label, align })), hist,
+      openOrder: () => this.openModal('order'), rangeChips: [['week', 'This week'], ['month', 'This month']].map(([id, l]) => chip(l, s.range === id, () => this.setState({ range: id }))),
+      orderTabs: [tab('My orders', s.orderTab === 'mine', () => this.setState({ orderTab: 'mine' })), tab('Team orders', s.orderTab === 'team', () => this.setState({ orderTab: 'team' }))], orderCards, orderRows, noOrders: orderRows.length === 0,
+      teamTitle: isRoot ? 'Organisation' : 'My Team', inviteLink: `emperor.app/join/${s.me}`, crumbs, focus, treeRows, noTreeRows: treeRows.length === 0, treeQ: s.treeQ, setTreeQ: e => this.setState({ treeQ: e.target.value }),
+      treeChips: Object.keys(TF).map(k => chip(k === 'All' ? 'Tree' : k, s.treeF === k, () => this.setState({ treeF: k }), F.team.filter(TF[k]).length)),
+      openTask: () => this.openModal('task'), taskTabs: [tab('Assigned to me', s.taskTab === 'mine', () => this.setState({ taskTab: 'mine' }), s.tasks.filter(t => t.to === s.me).length), ...(hasTeam ? [tab('I assigned', s.taskTab === 'given', () => this.setState({ taskTab: 'given' }), s.tasks.filter(t => t.by === s.me).length)] : [])], taskRows, noTaskRows: taskRows.length === 0,
+      openMeeting: () => this.openModal('meeting'), meetingRows: myMeetings.map(meetingView), noMeetingRows: myMeetings.length === 0, googleOff: !s.google[s.me],
+      toggleGoogle: () => { const on = !s.google[s.me]; this.setState({ google: { ...s.google, [s.me]: on } }); this.toastMsg(on ? `Google connected · ${me.email}` : 'Google disconnected'); },
+      openIssue: () => this.openModal('issue'),
+      issueRows: visIssues.map(i => { const t = tn(i.status === 'Open' ? 'warn' : 'ok'); return { ...i, ...M[i.who], text: i.text, whoName: i.who === s.me ? 'You' : M[i.who].name, sponsorName: M[i.who].sponsor ? M[M[i.who].sponsor].first : '—', dateLabel: fd(i.date), status: i.status, sBg: t.bg, sInk: t.ink, replyByName: i.by ? M[i.by].first : '', canReply: i.who !== s.me && i.status === 'Open', replyGo: () => this.openModal('reply', { id: i.id }), canChat: i.who !== s.me, chat: () => openConv(dmId(s.me, i.who)) }; }), noIssues: visIssues.length === 0,
+      openAch: () => this.openModal('ach'),
+      achRows: s.achievements.map(a => { const t = tn(a.kind === 'Step up' ? 'acc' : a.kind === 'New tool' ? 'info' : a.kind === 'Recognition' ? 'warn' : 'neu'); return { ...M[a.who], title: a.title, kind: a.kind, whoName: M[a.who].name, dateLabel: fd(a.date), byLabel: a.by === 'auto' ? 'Added automatically' : `Added by ${M[a.by] ? M[a.by].first : '—'}`, kBg: t.bg, kInk: t.ink }; }),
+      actCards: [{ label: 'Active this week', value: String(myDesc.filter(x => I[x].activity === 'Active').length), sub: `of ${myDesc.length} in your team`, ink: 'var(--ok)' }, { label: 'Missed today', value: String(missedToday.length), sub: 'Check-in or to-do', ink: 'var(--warn)' }, { label: 'Idle 1 week', value: String(idle.length), sub: '7–13 days', ink: 'var(--warn)' }, { label: 'Inactive', value: String(inact.length), sub: '2+ weeks', ink: 'var(--bad)' }],
+      actGroups,
+      runAuto: () => { let notifs = s.notifs; missedToday.forEach(id => { const a = !(s.logs[id] || {})[TODAY], b = !(s.todos[id] || []).some(t => t.date === TODAY); notifs = this.note(notifs, id, `You missed today\u2019s ${[a && 'daily check-in', b && 'to-do list'].filter(Boolean).join(' and ')}`, 'day', true); }); idle.forEach(id => { notifs = this.note(notifs, id, 'You haven\u2019t been active for a week. Check in today to stay active.', 'day', true); }); inact.forEach(id => { notifs = this.note(notifs, id, 'You are now an inactive member. Submit a check-in to become active again.', 'day', true); }); this.setState({ notifs }); this.toastMsg(`Sent ${missedToday.length} missed, ${idle.length} idle and ${inact.length} inactive notices (in-app + email)`); },
+      notifRows: s.notifs.filter(n => n.to === s.me).map(n => ({ ...n, channel: n.email ? 'In-app + Gmail' : 'In-app', bg: n.read ? 'transparent' : 'var(--acc-soft)', dot: n.read ? 'transparent' : 'var(--acc)', weight: n.read ? 500 : 600, open: () => this.setState(st => ({ notifs: st.notifs.map(x => x.id === n.id ? { ...x, read: true } : x), page: pages.some(p => p[0] === n.page) ? n.page : 'dashboard' })) })),
+      noNotifs: !s.notifs.some(n => n.to === s.me), notifSub: `${unread} unread`, readAll: () => this.setState({ notifs: s.notifs.map(n => n.to === s.me ? { ...n, read: true } : n) }),
+      profileRows: [{ k: 'Name', v: me.name }, { k: 'Email', v: me.email }, { k: 'Status', v: `${me.rLabel}${me.mr < me.rank ? ` (this month: ${RANKS[me.mr]})` : ''}` }, { k: 'QPV this month', v: `${me.teamQ} (own ${me.q})` }, { k: 'Sponsor', v: me.sponsorName }, { k: 'Invite link', v: `emperor.app/join/${s.me}` }],
+      googleText: s.google[s.me] ? `Connected as ${me.email}. Meetings you host get a Meet link, and invites arrive in your Gmail calendar.` : 'Not connected. Connect to create Google Meet links and get meeting invites in Gmail.',
+      googleBtn: s.google[s.me] ? 'Disconnect Google' : 'Connect Google',
+      ladder: RANKS.map((r, i) => ({ name: r, bg: RT[i][0], ink: RT[i][1], range: i === 0 ? '0–99 QPV' : i === 5 ? '4,000+ QPV' : i === 6 ? 'Set by sponsor' : `${TH[i].toLocaleString()}–${(TH[i + 1] - 1).toLocaleString()} QPV` })),
+      dd, closeDetail: () => this.setState({ detail: null }), statusVal: s.statusVal, setStatusVal: e => this.setState({ statusVal: e.target.value }), rankOptions: RANKS.map((r, i) => ({ v: String(i), l: r })),
+      modal, modalErr: s.modalErr, closeModal: () => this.setState({ modal: null }), stop: e => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>
