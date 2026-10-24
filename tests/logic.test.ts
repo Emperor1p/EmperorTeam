@@ -50,3 +50,18 @@ test('activity buckets', () => {
 test('dm ids are order independent', () => {
   assert.equal(dmId('b', 'a'), dmId('a', 'b'));
 });
+
+import { matchNames } from '../src/lib/logic.ts';
+test('sponsor search: any part, any case, typos suggest', () => {
+  const L = [{ name: 'Adaeze Okafor' }, { name: 'Chidi Nwosu' }, { name: 'Ifeoma Eze' }, { name: 'Émeka Obi' }];
+  const n = (r: { name: string }[]) => r.map(x => x.name);
+  assert.deepEqual(n(matchNames(L, 'eze').matches), ['Adaeze Okafor', 'Ifeoma Eze']);
+  assert.deepEqual(n(matchNames(L, 'CHIDI').matches), ['Chidi Nwosu']);
+  assert.deepEqual(n(matchNames(L, 'okafor ada').matches), ['Adaeze Okafor']);
+  assert.deepEqual(n(matchNames(L, 'emeka').matches), ['Émeka Obi']);
+  assert.equal(matchNames(L, 'Adaze').matches.length, 0);
+  assert.deepEqual(n(matchNames(L, 'Adaze').suggestions), ['Adaeze Okafor']);
+  assert.equal(n(matchNames(L, 'Chidy').suggestions)[0], 'Chidi Nwosu');
+  assert.equal(matchNames(L, 'zzzzzz').suggestions.length, 0);
+  assert.equal(matchNames(L, '').matches.length, 4);
+});

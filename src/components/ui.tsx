@@ -1,5 +1,5 @@
 'use client';
-import type { CSSProperties, ReactNode } from 'react';
+import { useId, useState, type CSSProperties, type InputHTMLAttributes, type ReactNode } from 'react';
 import { RT, TONE, type Tone } from '@/lib/logic';
 
 export function Avatar({ p, size = 32, font }: { p: { initials: string; tint: string; ink: string; avatar_url?: string | null }; size?: number; font?: number }) {
@@ -66,6 +66,32 @@ export function Skeleton() {
         <div className="skel" style={{ height: 210 }} /><div className="skel" style={{ height: 210 }} /><div className="skel" style={{ height: 210 }} />
       </div>
       <div className="skel" style={{ height: 160 }} />
+    </div>
+  );
+}
+
+/** Password box with a Show / Hide button. */
+export function PasswordInput({ style, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
+  const [show, setShow] = useState(false);
+  return (
+    <div style={{ position: 'relative', display: 'flex' }}>
+      <input {...props} type={show ? 'text' : 'password'} className="input" style={{ flex: 1, paddingRight: 64, ...style }} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
+      <button type="button" onClick={() => setShow(v => !v)} aria-label={show ? 'Hide password' : 'Show password'} aria-pressed={show}
+        style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', height: 28, padding: '0 9px', borderRadius: 7, border: 'none', background: 'var(--sunk)', color: 'var(--ink)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+        {show ? 'Hide' : 'Show'}
+      </button>
+    </div>
+  );
+}
+
+/** Labelled password box. The label holds only the field name, so screen readers don't read "Show" as part of it. */
+export function PasswordField({ label, ...props }: { label: string } & Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
+  const auto = useId();
+  const id = props.id || auto;
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <PasswordInput {...props} id={id} />
     </div>
   );
 }
