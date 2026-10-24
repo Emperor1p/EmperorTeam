@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useReady } from './Store';
-import { PasswordInput } from './ui';
+import { PasswordField } from './ui';
 
 /** Settings card: change password (checks the current one), or set one if you joined with Google. */
 export function PasswordCard() {
@@ -51,9 +51,9 @@ export function PasswordCard() {
       {!hasPassword && <span className="muted" style={{ fontSize: 13 }}>You joined with Google. Set a password if you also want to sign in with your email.</span>}
       <form onSubmit={save} className="flex flex-col gap-2.5">
         <input type="email" autoComplete="username" value={s.me.email} readOnly hidden />
-        {hasPassword && <label className="field">Current password<PasswordInput autoComplete="current-password" value={current} onChange={on(setCurrent)} /></label>}
-        <label className="field">New password<PasswordInput autoComplete="new-password" value={next} onChange={on(setNext)} placeholder="At least 6 characters" /></label>
-        <label className="field">Confirm new password<PasswordInput autoComplete="new-password" value={again} onChange={on(setAgain)} /></label>
+        {hasPassword && <PasswordField label="Current password" autoComplete="current-password" value={current} onChange={on(setCurrent)} />}
+        <PasswordField label="New password" autoComplete="new-password" value={next} onChange={on(setNext)} placeholder="At least 6 characters" />
+        <PasswordField label="Confirm new password" autoComplete="new-password" value={again} onChange={on(setAgain)} />
         {err && <span role="alert" className="err">{err}</span>}
         <button type="submit" className="btn btn-p" style={{ alignSelf: 'flex-start' }} disabled={busy}>{hasPassword ? 'Change password' : 'Set password'}</button>
       </form>

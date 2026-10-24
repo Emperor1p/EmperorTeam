@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { RANKS } from '@/lib/logic';
+import { RANKS, matchNames } from '@/lib/logic';
 import { APP_NAME } from '@/lib/config';
 
 export type SponsorHit = { id: string; name: string; status_rank: number };
@@ -36,18 +36,54 @@ export function SponsorPicker({ value, onChange, hasRoot }: { value: SponsorHit 
     return <div className="field">Sponsor (who brought you in)<span style={{ fontWeight: 400, color: 'var(--ink)', background: 'var(--sunk)', borderRadius: 9, padding: '10px 12px' }}>No sponsor · You will be the top leader</span></div>;
   }
   if (failed) return <SponsorSearch value={value} onChange={onChange} />;
-  const options = list || [];
-  const missing = value && !options.some(o => o.id === value.id);
+  return <SponsorCombo list={list} value={value} onChange={onChange} />;
+}
+
+/** Type-to-filter dropdown: shows everyone, narrows as you type, suggests close names for typos. */
+function SponsorCombo({ list, value, onChange }: { list: SponsorHit[] | null; value: SponsorHit | null; onChange: (s: SponsorHit | null) => void }) {
+  const [q, setQ] = useState('');
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const listRef = useRef<HTMLDivElement>(null);
+  const all = list || [];
+  const { matches, suggestions } = matchNames(all, q);
+  const shown = matches.length ? matches : suggestions;
+  const pick = (h: SponsorHit) => { onChange(h); setQ(''); setOpen(false); };
+  const label = (h: SponsorHit) => `${h.name} · ${RANKS[h.status_rank]}`;
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setOpen(true); setActive(i => Math.min(i + 1, shown.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(i => Math.max(i - 1, 0)); }
+    else if (e.key === 'Enter' && open && shown[active]) { e.preventDefault(); pick(shown[active]); }
+    else if (e.key === 'Escape') setOpen(false);
+  };
   return (
-    <label className="field">Sponsor (who brought you in)
-      <select className="input" style={{ height: 40 }} value={value?.id || ''} disabled={!list}
-        onChange={e => onChange(options.find(o => o.id === e.target.value) || null)}>
-        <option value="">{list ? 'Choose your sponsor…' : 'Loading members…'}</option>
-        {missing && <option value={value!.id}>{value!.name} · {RANKS[value!.status_rank]}</option>}
-        {options.map(o => <option key={o.id} value={o.id}>{o.name} · {RANKS[o.status_rank]}</option>)}
-      </select>
-      <span className="hint">Pick the person who brought you in. Their invite link selects them for you.</span>
-    </label>
+    <div className="field">
+      <label htmlFor="sponsor-box">Sponsor (who brought you in)</label>
+      <div style={{ position: 'relative', display: 'flex' }}>
+        <input id="sponsor-box" className="input" style={{ flex: 1, height: 40, paddingRight: 36 }} role="combobox" aria-expanded={open} aria-controls="sponsor-list" aria-autocomplete="list" autoComplete="off"
+          disabled={!list} placeholder={!list ? 'Loading members…' : value ? '' : 'Tap to choose, or type a name'}
+          value={open ? q : value ? label(value) : q}
+          onFocus={() => { setOpen(true); setActive(0); }}
+          onBlur={e => { if (!listRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false); }}
+          onClick={() => setOpen(true)}
+          onChange={e => { setQ(e.target.value); setOpen(true); setActive(0); if (value) onChange(null); }}
+          onKeyDown={onKey} />
+        <span aria-hidden style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--mut)', pointerEvents: 'none', fontSize: 11 }}>▾</span>
+        {open && list && (
+          <div ref={listRef} id="sponsor-list" role="listbox" className="card" style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, zIndex: 20, maxHeight: 260, overflowY: 'auto', borderRadius: 10, boxShadow: '0 12px 30px rgba(0,0,0,.12)' }}>
+            {!matches.length && suggestions.length > 0 && <div className="muted" style={{ padding: '8px 12px 4px', fontSize: 12, fontWeight: 600 }}>No exact match. Did you mean:</div>}
+            {shown.map((h, i) => (
+              <div key={h.id} role="option" tabIndex={-1} aria-selected={i === active} onMouseDown={e => e.preventDefault()} onClick={() => pick(h)} onMouseEnter={() => setActive(i)}
+                className="flex items-center justify-between gap-2" style={{ padding: '10px 12px', borderBottom: '1px solid var(--line)', cursor: 'pointer', color: 'var(--ink)', fontWeight: 600, background: i === active ? 'var(--sunk)' : undefined }}>
+                {h.name}<span className="muted" style={{ fontWeight: 400, fontSize: 12.5 }}>{RANKS[h.status_rank]}</span>
+              </div>
+            ))}
+            {!shown.length && <div className="muted" style={{ padding: '10px 12px', fontWeight: 400 }}>No one with that name. Check the spelling, or ask your sponsor for their invite link.</div>}
+          </div>
+        )}
+      </div>
+      <span className="hint">Tap to see everyone, or type part of a name. Your sponsor&apos;s invite link fills this in for you.</span>
+    </div>
   );
 }
 

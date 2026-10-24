@@ -3,7 +3,7 @@ import { Suspense, useEffect, useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { AuthFrame, PENDING_SPONSOR, SponsorPicker, StatusFields, checkStatusNumbers, consumeHashSession, type SponsorHit } from '@/components/auth';
-import { PasswordInput } from '@/components/ui';
+import { PasswordField, PasswordInput } from '@/components/ui';
 
 export default function LoginPage() {
   return <Suspense><Login /></Suspense>;
@@ -130,7 +130,7 @@ function Login() {
         <form onSubmit={signUp} className="flex flex-col gap-3">
           <label className="field">Full name<input className="input" style={{ height: 40 }} autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="Grace Johnson" /></label>
           <label className="field">Email (Gmail for meeting invites)<input className="input" style={{ height: 40 }} type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="grace@gmail.com" /></label>
-          <label className="field">Password<PasswordInput style={{ height: 40 }} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" /></label>
+          <PasswordField label="Password" style={{ height: 40 }} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" />
           <SponsorPicker value={sponsor} onChange={setSponsor} hasRoot={hasRoot} />
           <StatusFields {...{ kind, setKind, qpv, setQpv, earn, setEarn }} />
           {err && <span role="alert" className="err">{err}</span>}

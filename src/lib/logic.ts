@@ -96,3 +96,30 @@ export const firstOf = (name: string) => name.trim().split(/\s+/)[0] || name;
 
 export const dmId = (a: string, b: string) => 'dm:' + [a, b].sort().join('|');
 export const MEET_RE = /^https:\/\/meet\.google\.com\/\S+/;
+
+// ── Sponsor search (sign-up) ──
+const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+function editDistance(a: string, b: string) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+/** Names containing every typed word (any order, any part). If none, the closest names as suggestions. */
+export function matchNames<T extends { name: string }>(list: T[], query: string) {
+  const q = norm(query);
+  if (!q) return { matches: list, suggestions: [] as T[] };
+  const words = q.split(' ');
+  const matches = list.filter(p => { const n = norm(p.name); return words.every(w => n.includes(w)); });
+  if (matches.length) return { matches, suggestions: [] as T[] };
+  // Typo tolerance: compare each typed word with each part of the name (and the start of it).
+  const score = (p: T) => {
+    const parts = norm(p.name).split(' ');
+    return words.reduce((t, w) => t + Math.min(...parts.map(x => Math.min(editDistance(w, x), editDistance(w, x.slice(0, w.length))))), 0);
+  };
+  const limit = Math.max(2, Math.ceil(q.replace(/ /g, '').length / 3));
+  const suggestions = list.map(p => ({ p, s: score(p) })).filter(x => x.s <= limit).sort((a, b) => a.s - b.s).slice(0, 3).map(x => x.p);
+  return { matches: [] as T[], suggestions };
+}

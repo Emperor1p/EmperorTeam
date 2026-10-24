@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { AuthFrame, PENDING_SPONSOR, SponsorPicker, StatusFields, checkStatusNumbers, type SponsorHit } from '@/components/auth';
-import { PasswordInput } from '@/components/ui';
+import { PasswordField } from '@/components/ui';
 
 // For people who joined through Google or an emailed invite and still need a sponsor and status.
 export default function Onboarding() {
@@ -59,7 +59,7 @@ export default function Onboarding() {
       <div className="flex flex-col gap-1"><span style={{ fontWeight: 700, fontSize: 18 }}>Finish setting up your account</span><span className="muted" style={{ fontSize: 13 }}>Tell us who brought you in so you join the right team.</span></div>
       <form onSubmit={save} className="flex flex-col gap-3">
         <label className="field">Full name<input className="input" style={{ height: 40 }} value={name} onChange={e => setName(e.target.value)} placeholder="Grace Johnson" /></label>
-        {needPw && <label className="field">Choose a password<PasswordInput style={{ height: 40 }} autoComplete="new-password" value={pw} onChange={e => setPw(e.target.value)} placeholder="At least 6 characters" /></label>}
+        {needPw && <PasswordField label="Choose a password" style={{ height: 40 }} autoComplete="new-password" value={pw} onChange={e => setPw(e.target.value)} placeholder="At least 6 characters" />}
         <SponsorPicker value={sponsor} onChange={setSponsor} hasRoot={true} />
         <StatusFields {...{ kind, setKind, qpv, setQpv, earn, setEarn }} />
         {err && <span role="alert" className="err">{err}</span>}
