@@ -62,10 +62,16 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="flex flex-col gap-1.5">
-          <h1 className="h1">{greeting()}, {me.first}</h1>
-          <div className="flex flex-wrap items-center gap-2" style={{ color: 'var(--mut)', fontSize: 13 }}>
-            <RankBadge rank={me.status_rank} /><span>{monthLine(me)}</span><span>· Sponsor: {me.sponsorName}</span>
+        <div className="flex min-w-0 items-center gap-3.5">
+          <button type="button" onClick={go('/settings')} title={me.avatar_url ? 'Change photo' : 'Add a profile photo'} aria-label={me.avatar_url ? 'Change photo' : 'Add a profile photo'}
+            style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer', borderRadius: '50%', flex: 'none' }}>
+            <Avatar p={me} size={56} font={19} />
+          </button>
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <h1 className="h1">{greeting()}, {me.first}</h1>
+            <div className="flex flex-wrap items-center gap-2" style={{ color: 'var(--mut)', fontSize: 13 }}>
+              <RankBadge rank={me.status_rank} /><span>{monthLine(me)}</span><span>· Sponsor: {me.sponsorName}</span>
+            </div>
           </div>
         </div>
         <span className="muted" style={{ fontSize: 13 }}>{fdLong(today)} · Lagos {clock()}</span>
