@@ -9,7 +9,7 @@ const tone = (k: string): Tone => k === 'Step up' ? 'acc' : k === 'New tool' ? '
 export default function Achievements() {
   const s = useReady();
   const ui = useUI();
-  const { data, nameOf } = s;
+  const { data, nameOf, photoOf } = s;
   return (
     <>
       <PageHead title="Achievements" sub="Step-ups are added automatically. Leaders can add achievements for their team, and they show for everyone."
@@ -19,7 +19,7 @@ export default function Achievements() {
           const name = nameOf[a.member_id] || 'Team member';
           return (
             <div key={a.id} className="flex flex-wrap items-center gap-3" style={{ padding: '13px 18px', borderBottom: '1px solid var(--line)' }}>
-              <Avatar p={{ initials: initialsOf(name), ...avatarOf(a.member_id) }} size={34} font={11} />
+              <Avatar p={{ initials: initialsOf(name), ...avatarOf(a.member_id), avatar_url: photoOf[a.member_id] }} size={34} font={11} />
               <div className="flex min-w-0 flex-col" style={{ flex: '1 1 220px' }}>
                 <span style={{ fontWeight: 600 }}>{a.title}</span>
                 <span className="muted" style={{ fontSize: 12.5 }}>{name} · {fd(lagosDateOf(a.created_at))} · {a.added_by ? `Added by ${(nameOf[a.added_by] || '—').split(' ')[0]}` : 'Added automatically'}</span>

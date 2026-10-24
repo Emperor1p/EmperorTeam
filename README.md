@@ -6,6 +6,7 @@ Built with Next.js 15, Tailwind and Supabase (Auth, Postgres, Row Level Security
 - `src/`: the app
 - `supabase/migrations/001_schema.sql`: the original database (already run on your project)
 - `supabase/migrations/002_app_support.sql`: **run this once** (see step 1)
+- `supabase/migrations/003_profile.sql`: profile photos and the top leader's outside sponsor. **Run once** after 002
 - `design/`: the Claude Design prototype and handoff notes this app was built from
 
 ---
@@ -22,6 +23,8 @@ It fixes and adds:
 - **Notifications:** sponsors are now told about new orders, tasks, issues, achievements and meeting invites.
 - **Sign-up:** QPV and earnings entered at sign-up now count, and people who use Google sign-in pick their sponsor.
 - **New tools:** sponsor search on the sign-up page, and the queue that sends emails.
+
+Then do the same with `supabase/migrations/003_profile.sql` (profile photos and the top leader's sponsor). Supabase may warn about "destructive operations": the only drops are access rules that are recreated straight away. No data is removed.
 
 ### 2. Deploy on Vercel
 1. vercel.com → **Add New → Project** → import `EmperorTeam` → Framework **Next.js** (detected automatically).
