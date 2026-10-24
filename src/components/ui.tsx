@@ -2,7 +2,11 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { RT, TONE, type Tone } from '@/lib/logic';
 
-export function Avatar({ p, size = 32, font }: { p: { initials: string; tint: string; ink: string }; size?: number; font?: number }) {
+export function Avatar({ p, size = 32, font }: { p: { initials: string; tint: string; ink: string; avatar_url?: string | null }; size?: number; font?: number }) {
+  if (p.avatar_url) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={p.avatar_url} alt="" width={size} height={size} loading="lazy" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flex: 'none', background: p.tint }} />;
+  }
   return (
     <span aria-hidden style={{ width: size, height: size, borderRadius: '50%', background: p.tint, color: p.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: font ?? Math.round(size * 0.36), flex: 'none' }}>
       {p.initials}

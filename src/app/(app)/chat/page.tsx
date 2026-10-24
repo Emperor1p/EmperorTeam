@@ -60,7 +60,7 @@ export default function Chat() {
             {convs.map(c => {
               const l = chat.msgsOf(c), last = l[l.length - 1], u = c === sel ? 0 : chat.unreadOf(c);
               const other = isTeam(c) ? null : (chat.convMembers(c).find(x => x !== uid) || uid);
-              const av = other && I[other] ? I[other] : other ? { initials: (nm(other)[0] || '?').toUpperCase(), tint: 'var(--sunk)', ink: 'var(--ink)' } : { initials: '#', tint: 'var(--acc-soft)', ink: 'var(--acc-text)' };
+              const av = other && I[other] ? I[other] : other ? { initials: (nm(other)[0] || '?').toUpperCase(), tint: 'var(--sunk)', ink: 'var(--ink)', avatar_url: s.photoOf[other] } : { initials: '#', tint: 'var(--acc-soft)', ink: 'var(--acc-text)' };
               return (
                 <div key={c} role="button" tabIndex={0} onClick={() => ui.setChatSel(c)} onKeyDown={e => e.key === 'Enter' && ui.setChatSel(c)} className="row-hover flex items-center gap-2.5"
                   style={{ padding: '12px 14px', borderBottom: '1px solid var(--line)', cursor: 'pointer', background: c === sel ? 'var(--acc-soft)' : undefined }}>

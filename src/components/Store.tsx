@@ -129,7 +129,9 @@ function useStoreValue() {
     const m0 = monthStart(today);
     const T = tree(data.profiles);
     const nameOf: Record<string, string> = {};
-    data.names.forEach(n => { nameOf[n.id] = n.name; });
+    const photoOf: Record<string, string | null> = {};
+    data.names.forEach(n => { nameOf[n.id] = n.name; photoOf[n.id] = n.avatar_url; });
+    data.profiles.forEach(p => { photoOf[p.id] = p.avatar_url; });
     data.profiles.forEach(p => { nameOf[p.id] = p.name; });
     const qBy: Record<string, number> = {};
     data.qpv.forEach(e => { if (e.entry_date >= m0) qBy[e.member_id] = (qBy[e.member_id] || 0) + e.amount; });
@@ -144,10 +146,10 @@ function useStoreValue() {
         rLabel: RANKS[p.status_rank], rBg: RT[p.status_rank][0], rInk: RT[p.status_rank][1],
         q, teamQ, mr: rankOf(teamQ), team, personal: pe(p.id), teamEarn: sum(team, x => pe(x)), ordN: ordN(p.id),
         activity: activityOf(p.last_active_at, today) as Person['activity'],
-        sponsorName: p.sponsor_id ? (nameOf[p.sponsor_id] || '—') : 'None (top leader)'
+        sponsorName: p.sponsor_id ? (nameOf[p.sponsor_id] || '—') : (p.external_sponsor || 'None (top leader)')
       };
     });
-    return { T, I, nameOf, live, pe, m0 };
+    return { T, I, nameOf, photoOf, live, pe, m0 };
   }, [data, today]);
 
   const me = uid ? derived.I[uid] : undefined;

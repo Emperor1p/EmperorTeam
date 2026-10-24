@@ -1,6 +1,6 @@
 export type Profile = {
   id: string; name: string; email: string; sponsor_id: string | null; status_rank: number;
-  joined_at: string; last_active_at: string; onboarded: boolean;
+  joined_at: string; last_active_at: string; onboarded: boolean; avatar_url: string | null; external_sponsor: string | null;
 };
 export type QpvEntry = { id: string; member_id: string; entry_date: string; amount: number };
 export type OrderStatus = 'Active' | 'Completed' | 'Cancelled';
@@ -15,4 +15,4 @@ export type Achievement = { id: string; member_id: string; title: string; kind: 
 export type Message = { id: string; conversation: string; sender_id: string; body: string; created_at: string };
 export type ConvRead = { member_id: string; conversation: string; last_read_at: string };
 export type Notification = { id: string; recipient_id: string; body: string; page: string; send_email: boolean; read: boolean; link: string | null; created_at: string };
-export type NameRow = { id: string; name: string; status_rank: number };
+export type NameRow = { id: string; name: string; status_rank: number; avatar_url: string | null };
