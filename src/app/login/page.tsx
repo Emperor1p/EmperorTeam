@@ -106,11 +106,16 @@ function Login() {
       ) : tab === 'in' ? (
         <form onSubmit={signIn} className="flex flex-col gap-3">
           <label className="field">Email<input className="input" style={{ height: 40 }} type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@gmail.com" /></label>
-          <label className="field">Password<input className="input" style={{ height: 40 }} type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••" /></label>
+          <div className="field">
+            <div className="flex items-baseline justify-between gap-2">
+              <label htmlFor="signin-password">Password</label>
+              <button type="button" className="link" onClick={pick('reset')} style={{ fontSize: 12.5, fontWeight: 600 }}>Forgot password?</button>
+            </div>
+            <input id="signin-password" className="input" style={{ height: 40 }} type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••" />
+          </div>
           {err && <span role="alert" className="err">{err}</span>}
           <button type="submit" className="btn btn-p btn-lg" disabled={busy}>Sign in</button>
           <button type="button" className="btn btn-s btn-lg" style={{ fontSize: 14 }} onClick={google}>Continue with Google</button>
-          <button type="button" className="link" onClick={pick('reset')} style={{ fontSize: 13, fontWeight: 600, alignSelf: 'center' }}>Forgot password?</button>
         </form>
       ) : tab === 'reset' ? (
         <form onSubmit={reset} className="flex flex-col gap-3">
@@ -118,6 +123,7 @@ function Login() {
           <label className="field">Email<input className="input" style={{ height: 40 }} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@gmail.com" /></label>
           {err && <span role="alert" className="err">{err}</span>}
           <button type="submit" className="btn btn-p btn-lg" disabled={busy}>Send reset link</button>
+          <button type="button" className="link" onClick={pick('in')} style={{ fontSize: 13, fontWeight: 600, alignSelf: 'center' }}>Back to sign in</button>
         </form>
       ) : (
         <form onSubmit={signUp} className="flex flex-col gap-3">

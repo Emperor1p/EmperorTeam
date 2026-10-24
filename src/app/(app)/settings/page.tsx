@@ -3,6 +3,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useReady } from '@/components/Store';
 import { monthLine } from '@/components/ProfileDrawer';
 import { InviteLink } from '@/components/InviteLink';
+import { PasswordCard } from '@/components/PasswordCard';
 import { Avatar, PageHead } from '@/components/ui';
 import { RANKS, RT, TH } from '@/lib/logic';
 import { APP_NAME } from '@/lib/config';
@@ -119,6 +120,7 @@ export default function Settings() {
           {rows.map(([k, v]) => <div key={k} className="flex justify-between gap-3" style={{ padding: '8px 0', borderTop: '1px solid var(--line)', fontSize: 13.5 }}><span className="muted">{k}</span><span style={{ fontWeight: 600, textAlign: 'right', wordBreak: 'break-word' }}>{v}</span></div>)}
           <div style={{ paddingTop: 8, borderTop: '1px solid var(--line)' }}><InviteLink id={uid} /></div>
         </div>
+        <PasswordCard />
         <div className="card flex flex-col gap-3" style={{ padding: 20 }}>
           <span className="card-title">Install on your phone</span>
           <span className="muted" style={{ fontSize: 13 }}>iPhone: open this site in Safari, tap Share → Add to Home Screen. Android: open in Chrome, tap ⋮ → Install app. It then opens like a normal app.</span>
