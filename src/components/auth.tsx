@@ -20,8 +20,38 @@ export function AuthFrame({ children }: { children: ReactNode }) {
   );
 }
 
-/** Sponsor field: fixed when it came from an invite link, otherwise search by name (3+ letters). */
+/** Sponsor field: a dropdown of every member. An invite link preselects the sponsor.
+ *  Falls back to name search if the member list isn't available (004_sponsor_list.sql not run). */
 export function SponsorPicker({ value, onChange, hasRoot }: { value: SponsorHit | null; onChange: (s: SponsorHit | null) => void; hasRoot: boolean | null }) {
+  const [list, setList] = useState<SponsorHit[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (hasRoot === false) return;
+    supabase().rpc('list_sponsors').then(({ data, error }: { data: SponsorHit[] | null; error: unknown }) => {
+      if (error || !data) setFailed(true); else setList(data);
+    });
+  }, [hasRoot]);
+
+  if (hasRoot === false) {
+    return <div className="field">Sponsor (who brought you in)<span style={{ fontWeight: 400, color: 'var(--ink)', background: 'var(--sunk)', borderRadius: 9, padding: '10px 12px' }}>No sponsor · You will be the top leader</span></div>;
+  }
+  if (failed) return <SponsorSearch value={value} onChange={onChange} />;
+  const options = list || [];
+  const missing = value && !options.some(o => o.id === value.id);
+  return (
+    <label className="field">Sponsor (who brought you in)
+      <select className="input" style={{ height: 40 }} value={value?.id || ''} disabled={!list}
+        onChange={e => onChange(options.find(o => o.id === e.target.value) || null)}>
+        <option value="">{list ? 'Choose your sponsor…' : 'Loading members…'}</option>
+        {missing && <option value={value!.id}>{value!.name} · {RANKS[value!.status_rank]}</option>}
+        {options.map(o => <option key={o.id} value={o.id}>{o.name} · {RANKS[o.status_rank]}</option>)}
+      </select>
+      <span className="hint">Pick the person who brought you in. Their invite link selects them for you.</span>
+    </label>
+  );
+}
+
+function SponsorSearch({ value, onChange }: { value: SponsorHit | null; onChange: (s: SponsorHit | null) => void }) {
   const [q, setQ] = useState('');
   const [hits, setHits] = useState<SponsorHit[]>([]);
   useEffect(() => {
@@ -32,10 +62,6 @@ export function SponsorPicker({ value, onChange, hasRoot }: { value: SponsorHit 
     }, 250);
     return () => clearTimeout(t);
   }, [q]);
-
-  if (hasRoot === false) {
-    return <div className="field">Sponsor (who brought you in)<span style={{ fontWeight: 400, color: 'var(--ink)', background: 'var(--sunk)', borderRadius: 9, padding: '10px 12px' }}>No sponsor · You will be the top leader</span></div>;
-  }
   if (value) {
     return (
       <div className="field">Sponsor (who brought you in)
@@ -60,7 +86,6 @@ export function SponsorPicker({ value, onChange, hasRoot }: { value: SponsorHit 
           {hits.length === 0 && <span className="muted" style={{ display: 'block', padding: '9px 12px', fontWeight: 400 }}>No one found. Ask your sponsor for their invite link.</span>}
         </div>
       )}
-      <span className="hint">Or open your sponsor&apos;s invite link to fill this in.</span>
     </label>
   );
 }
